@@ -1,0 +1,99 @@
+---
+import type { InputField } from "@utils/type-props";
+
+const { type, placeholder, id }: InputField = Astro.props;
+---
+
+<div class="form-group">
+  <slot />
+  <input
+    type={type}
+    name={id}
+    class="form-style"
+    placeholder={placeholder}
+    id={id}
+    autocomplete="off"
+  />
+</div>
+
+<style>
+  .form-group {
+    position: relative;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    background-color: #1f2029;
+    align-items: center;
+    box-shadow: 0 4px 4px 0 rgba(21, 21, 21, 0.2);
+    padding-left: 13px;
+  }
+
+  .form-style {
+    padding: 13px 20px;
+    height: 48px;
+    width: 100%;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0.5px;
+    outline: none;
+    color: #c4c3ca;
+    background-color: transparent;
+    border: none;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+    font-family: var(--font-playwrite);
+  }
+
+  .form-style:focus,
+  .form-style:active {
+    border: none;
+    outline: none;
+  }
+
+  .form-group input:-ms-input-placeholder {
+    color: #c4c3ca;
+    opacity: 0.7;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input::-moz-placeholder {
+    color: #c4c3ca;
+    opacity: 0.7;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input:-moz-placeholder {
+    color: #c4c3ca;
+    opacity: 0.7;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input::-webkit-input-placeholder {
+    color: #c4c3ca;
+    opacity: 0.7;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input:focus:-ms-input-placeholder {
+    opacity: 0;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input:focus::-moz-placeholder {
+    opacity: 0;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input:focus:-moz-placeholder {
+    opacity: 0;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+  .form-group input:focus::-webkit-input-placeholder {
+    opacity: 0;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+  }
+</style>

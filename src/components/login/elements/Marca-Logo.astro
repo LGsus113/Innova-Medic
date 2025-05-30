@@ -1,0 +1,25 @@
+---
+import Logo from "@public/logo-innova-medic.webp";
+import Title from "@components/utilities/Title-Page.astro";
+import ContainerHeader from "@src/components/utilities/Container-Header.astro";
+import type { ZIndex } from "@utils/type-props";
+
+const { superposition }: ZIndex = Astro.props;
+---
+
+<ContainerHeader superposition={superposition} positionContener="fixed">
+  <div class="flex justify-between items-center w-3/5 py-5">
+    <div class="relative inline-block">
+      <div
+        class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-20 h-5 bg-black/30 rounded-full blur-sm"
+      >
+      </div>
+      <img
+        src={Logo.src}
+        alt="logo marca de innova medic"
+        class="relative z-10 size-32 drop-shadow-[0_0_5px_rgba(255,255,255,0.7)]"
+      />
+    </div>
+    <Title />
+  </div>
+</ContainerHeader>

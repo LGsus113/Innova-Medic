@@ -1,0 +1,21 @@
+---
+import Title from "@components/utilities/Title-Page.astro";
+import Information from "@components/utilities/header/Information.astro";
+---
+
+<div class="flex justify-between items-center w-4/5">
+  <Title />
+  <div
+    class="flex items-center gap-5 bg-pink-600 px-5 py-3 rounded-lg drop-shadow-[0_0_3px_rgba(255,255,255,0.5)] shadow-inner shadow-pink-300"
+  >
+    <h1 class="font-signika text-lg text-white">
+      Hola,
+      <span
+        class="font-bold text-xl underline decoration-2 decoration-pink-300 underline-offset-[4px]"
+      >
+        Dr. Ana Garcia
+      </span>
+    </h1>
+    <Information />
+  </div>
+</div>

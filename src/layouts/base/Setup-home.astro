@@ -1,0 +1,19 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Display from "@layouts/display/Display-home.astro";
+import Header from "@components/utilities/header/Header.astro";
+import Footer from "@components/utilities/footer/Footer.astro";
+import type { LayoutProps, SetupProps } from "@src/utils/type-props";
+
+type CombinatedProps = LayoutProps & SetupProps;
+
+const { title, description, MainComponent } = Astro.props as CombinatedProps;
+---
+
+<Layout title={title} description={description}>
+  <Display>
+    <Header slot="header" />
+    <MainComponent slot="main" />
+    <Footer slot="footer" />
+  </Display>
+</Layout>

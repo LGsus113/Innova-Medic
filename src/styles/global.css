@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "@fontsource/cherry-bomb-one";
+@import "@fontsource/signika";
+@import "@fontsource/playwrite-hu";
+
+@theme {
+  --color-primary: #f74780;
+  --color-secondary: #fc6998;
+  --color-tertiary: #fa8fb1;
+  --color-quaternary: #ffc1d5;
+  --color-quinary: #ffe4ec;
+  --color-dark: #2a2b38;
+  --color-light-dark: #c4c3ca;
+
+  --font-Cherry-Bomb: Cherry Bomb One, sans-serif;
+  --font-signika: Signika, sans-serif;
+  --font-playwrite: Playwrite HU, cursive;
+}
+
+@layer components {
+  .card-wrap {
+    @apply absolute w-full p-[0_35px] top-1/2 left-0 z-20 block;
+  }
+  .back-front {
+    @apply size-full absolute rounded-md left-0 top-0;
+  }
+  .input-icon {
+    @apply text-quaternary size-9;
+  }
+  .button-citas {
+    @apply text-white brightness-95 font-signika px-4 py-2 rounded-lg hover:cursor-pointer hover:brightness-105 transition border-none outline-none drop-shadow-[0_0_5px_rgba(0,0,0,0.5)];
+  }
+}
+
+.dialog-info-medic[open] {
+  opacity: 1;
+  scale: 1;
+  box-shadow: inset 0 0 8px 2px rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+
+  @starting-style {
+    opacity: 0;
+    scale: 0;
+  }
+}
+.dialog-info-medic {
+  opacity: 0;
+  scale: 0;
+  transition: all 0.3s ease, display 0.35s ease allow-discrete;
+}
+
+.scroll-clean {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-clean::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}

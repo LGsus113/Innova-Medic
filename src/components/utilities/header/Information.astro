@@ -1,0 +1,63 @@
+---
+import User from "@assets/icon-svg/user.svg";
+---
+
+<div
+  id="toggleMenu"
+  class="flex gap-2 justify-center items-center cursor-pointer"
+>
+  <User
+    class="size-10 text-pink-600 rounded-full bg-white p-1 shadow-inner shadow-black/90"
+  />
+  <div
+    id="arrow"
+    class="pointer-events-none w-0 h-0 border-y-4 border-l-6 border-y-transparent border-l-white transition-transform duration-200 rotate-180"
+  >
+  </div>
+</div>
+<div
+  id="menu"
+  class="hidden flex-col font-signika absolute top-full right-0 mt-2 bg-pink-600 text-white text-lg rounded-b-sm px-4 py-2 z-40 shadow-inner shadow-pink-300"
+>
+  <button>Perfil</button>
+  <button>Cerrar sesion</button>
+</div>
+
+<style>
+  #menu button {
+    width: auto;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    text-align: start;
+  }
+
+  #menu button:hover {
+    text-decoration: underline var(--color-pink-300) 2px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById("toggleMenu");
+  const arrow = document.getElementById("arrow");
+  const menu = document.getElementById("menu");
+
+  let open = false;
+
+  toggle?.addEventListener("click", () => {
+    open = !open;
+
+    if (open) {
+      menu?.classList.remove("hidden");
+      menu?.classList.add("flex");
+    } else {
+      menu?.classList.add("hidden");
+      menu?.classList.remove("flex");
+    }
+
+    arrow?.classList.toggle("rotate-90", open); // ▼
+    arrow?.classList.toggle("rotate-180", !open); // ◀
+  });
+</script>

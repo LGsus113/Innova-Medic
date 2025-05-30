@@ -1,0 +1,15 @@
+---
+import Layout from "@layouts/Layout.astro";
+import StupLogin from "@layouts/display/Display-login.astro";
+import type { LayoutProps, SetupProps } from "@src/utils/type-props";
+
+type CombinatedProps = LayoutProps & SetupProps;
+
+const { title, description, MainComponent } = Astro.props as CombinatedProps;
+---
+
+<Layout title={title} description={description} >
+  <StupLogin>
+    <MainComponent />
+  </StupLogin>
+</Layout>

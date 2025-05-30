@@ -1,0 +1,14 @@
+---
+import type { ZIndex } from "@utils/type-props";
+const { superposition, positionContener }: ZIndex = Astro.props;
+---
+
+<div
+  class:list={[
+    positionContener,
+    "top-0 w-full h-auto flex justify-center",
+    superposition
+  ]}
+>
+  <slot />
+</div>

@@ -1,0 +1,15 @@
+---
+import ContainerHeader from "@src/components/utilities/Container-Header.astro";
+import Top from "@components/utilities/header/Top.astro";
+import Nav from "@components/utilities/header/Nav.astro";
+---
+
+<ContainerHeader superposition="z-50" positionContener="sticky">
+  <div
+    data-container-linkers
+    class="w-full flex flex-col justify-center items-center py-5"
+  >
+    <Top />
+    <Nav />
+  </div>
+</ContainerHeader>

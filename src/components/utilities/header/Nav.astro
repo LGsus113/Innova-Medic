@@ -1,0 +1,11 @@
+---
+import Hovered from "@components/utilities/header/Hovered.astro";
+import Secciones from "@components/home/elements-JSX/Secciones.jsx";
+---
+
+<nav
+  class="w-auto h-auto mt-7 flex justify-center items-center text-2xl text-black font-signika"
+>
+  <Secciones client:load />
+  <Hovered />
+</nav>
