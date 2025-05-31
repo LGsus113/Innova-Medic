@@ -69,7 +69,19 @@ export interface CitaModalProps {
   citas: Cita[];
 }
 
-export interface DiaCalendario {
+interface DiaCalendario {
   numero: number;
   mes: "anterior" | "actual" | "siguiente";
+}
+
+export interface DiaCalendarioConCitas extends DiaCalendario {
+  tieneCitas?: boolean;
+  citas?: Cita[];
+}
+
+export interface TooltipCalendarProps {
+  dia: number;
+  x: number;
+  y: number;
+  citas: Cita[];
 }

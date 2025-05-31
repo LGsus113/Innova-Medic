@@ -9,9 +9,9 @@ export default function DynamicContent() {
       title: "Consulta general",
       paciente: "María Rodriguez",
       medico: "Dr. Ana García",
-      fecha: "14 de noviembre de 2023",
-      hora: "10:00 a. m.",
-      duracion: "30",
+      fecha: "2025-05-14",
+      hora: "10:00 a.m.",
+      duracion: "30 min",
       estado: "Finalizada",
       notas: "Paciente presenta síntomas de resfriado. Se recomienda reposo.",
       diagnostico: "Resfriado común",
@@ -20,9 +20,9 @@ export default function DynamicContent() {
       title: "Seguimiento Cardiológico",
       paciente: "Juan Gonzáles",
       medico: "Dr. Ana García",
-      fecha: "16 de noviembre de 2023",
+      fecha: "2025-05-18",
       hora: "09:00 a. m.",
-      duracion: "50",
+      duracion: "50 min",
       estado: "Pendiente",
       notas: "Sin notas.",
       diagnostico: "Sin diagnóstico.",
@@ -43,7 +43,7 @@ export default function DynamicContent() {
       {
         {
           citas: <CitaModal citas={citas} />,
-          agenda: <Agenda />,
+          agenda: <Agenda citas={citas} />,
           recetas: <Recetas />,
         }[activeSection.value]
       }

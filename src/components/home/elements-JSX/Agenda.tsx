@@ -1,46 +1,17 @@
 import { useState } from "preact/hooks";
-import type { DiaCalendario } from "@utils/type-props";
+import { obtenerDiaDelMes } from "@utils/calendar-functions";
+import TooltipCalendar from "@components/home/elements-JSX/Tooltip-Calendar";
+import type { CitaModalProps } from "@utils/type-props";
 
-const obtenerDiaDelMes = (año: number, mes: number) => {
-  const dias: DiaCalendario[][] = [];
-
-  const primerDiaSemana = new Date(año, mes, 1).getDay();
-  const diasEnMes = new Date(año, mes + 1, 0).getDate();
-  const diasEnMesAnterior = new Date(año, mes, 0).getDate();
-
-  let dia = 1;
-  let siguienteMesDia = 1;
-
-  for (let semanaIndex = 0; semanaIndex < 6; semanaIndex++) {
-    const semana: DiaCalendario[] = [];
-
-    for (let diaSemana = 0; diaSemana < 7; diaSemana++) {
-      const celdaIndex = semanaIndex * 7 + diaSemana;
-
-      if (celdaIndex < primerDiaSemana) {
-        semana.push({
-          numero: diasEnMesAnterior - primerDiaSemana + 1 + celdaIndex,
-          mes: "anterior",
-        });
-      } else if (dia <= diasEnMes) {
-        semana.push({ numero: dia, mes: "actual" });
-        dia++;
-      } else {
-        semana.push({ numero: siguienteMesDia, mes: "siguiente" });
-        siguienteMesDia++;
-      }
-    }
-
-    dias.push(semana);
-  }
-
-  return dias;
-};
-
-export default function Agenda() {
+export default function Agenda({ citas = [] }: CitaModalProps) {
   const hoy = new Date();
   const [año, setAño] = useState(hoy.getFullYear());
   const [mes, setMes] = useState(hoy.getMonth());
+  const [diaHover, setDiaHover] = useState<{
+    dia: number;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const avanzarMes = () => {
     if (mes === 11) {
@@ -60,7 +31,7 @@ export default function Agenda() {
     }
   };
 
-  const semanas = obtenerDiaDelMes(año, mes);
+  const semanas = obtenerDiaDelMes(año, mes, citas);
   const meses = [
     "enero",
     "febrero",
@@ -76,8 +47,33 @@ export default function Agenda() {
     "diciembre",
   ];
 
+  const citasDiaHover = diaHover
+    ? semanas
+        .flat()
+        .find((d) => d.numero === diaHover.dia && d.mes === "actual")?.citas
+    : [];
+
+  const handleDiaMouseEnter = (dia: number, e: MouseEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    const calendarContainer = target.closest(".calendar-container");
+    const containerRect = calendarContainer?.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
+
+    if (containerRect) {
+      setDiaHover({
+        dia,
+        x: rect.left - containerRect.left + rect.width / 2,
+        y: rect.top - containerRect.top,
+      });
+    }
+  };
+
+  const handleDiaMouseLeave = () => {
+    setDiaHover(null);
+  };
+
   return (
-    <div className="p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] text-center size-full flex flex-col gap-3 font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)]">
+    <div className="calendar-container p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] text-center size-full flex flex-col gap-3 font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)] relative">
       <div className="w-full h-auto flex justify-between items-center">
         <button
           onClick={retrocederMes}
@@ -116,8 +112,12 @@ export default function Agenda() {
             return (
               <div
                 key={`${i}-${j}`}
+                onMouseEnter={(e) =>
+                  dia.mes === "actual" && handleDiaMouseEnter(dia.numero, e)
+                }
+                onMouseLeave={handleDiaMouseLeave}
                 className={`
-                  h-full rounded-lg flex items-start justify-start px-2 py-1 border
+                  h-full rounded-lg flex items-start justify-start px-2 py-1 border relative
                   ${dia.mes === "actual" ? "opacity-100" : "opacity-50"}
                   ${
                     esHoy
@@ -134,11 +134,23 @@ export default function Agenda() {
                 >
                   {dia.numero}
                 </span>
+                {dia.tieneCitas && dia.mes === "actual" && (
+                  <div className="absolute bottom-1 right-1 w-2 h-2 bg-pink-600 rounded-full"></div>
+                )}
               </div>
             );
           })
         )}
       </div>
+
+      {diaHover && citasDiaHover && citasDiaHover.length > 0 && (
+        <TooltipCalendar
+          dia={diaHover.dia}
+          x={diaHover.x}
+          y={diaHover.y}
+          citas={citasDiaHover}
+        />
+      )}
     </div>
   );
 }
