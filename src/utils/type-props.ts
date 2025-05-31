@@ -46,3 +46,30 @@ export interface ZIndex {
   superposition?: ZIndexTailwind;
   positionContener?: PositionTailwind;
 }
+
+export interface Cita {
+  title: string;
+  paciente: string;
+  fecha: string;
+  hora: string;
+  duracion: string;
+  medico: string;
+  estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
+  notas: string;
+  diagnostico: string;
+}
+
+export interface ParrafoInfoProps {
+  title?: string;
+  description?: string;
+  classNames?: string;
+}
+
+export interface CitaModalProps {
+  citas: Cita[];
+}
+
+export interface DiaCalendario {
+  numero: number;
+  mes: "anterior" | "actual" | "siguiente";
+}

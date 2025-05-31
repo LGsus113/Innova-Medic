@@ -13,6 +13,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     esbuild: {
+      jsx: "automatic",
       jsxInject: `import { h } from 'preact'`,
     },
     resolve: {

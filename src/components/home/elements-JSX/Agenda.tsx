@@ -1,9 +1,5 @@
 import { useState } from "preact/hooks";
-
-type DiaCalendario = {
-  numero: number;
-  mes: "anterior" | "actual" | "siguiente";
-};
+import type { DiaCalendario } from "@utils/type-props";
 
 const obtenerDiaDelMes = (año: number, mes: number) => {
   const dias: DiaCalendario[][] = [];
@@ -81,26 +77,26 @@ export default function Agenda() {
   ];
 
   return (
-    <div className="p-4 rounded-xl shadow-xl bg-white text-center size-full flex flex-col">
-      <div className="w-full h-auto flex justify-between items-center mb-2">
+    <div className="p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] text-center size-full flex flex-col gap-3 font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)]">
+      <div className="w-full h-auto flex justify-between items-center">
         <button
           onClick={retrocederMes}
-          className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+          className="bg-pink-600 shadow-inner shadow-white px-3 py-1 rounded-lg button-citas"
         >
           Anterior
         </button>
-        <span className="text-lg font-semibold">
+        <span className="text-lg font-semibold text-white">
           {meses[mes]} de {año}
         </span>
         <button
           onClick={avanzarMes}
-          className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+          className="bg-pink-600 shadow-inner shadow-white px-3 py-1 rounded-lg button-citas"
         >
           Siguiente
         </button>
       </div>
 
-      <div className="w-full h-auto grid grid-cols-7 text-sm font-medium text-gray-600 mb-2">
+      <div className="w-full h-auto grid grid-cols-7 text-md text-white/50">
         {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((d) => (
           <div key={d} className="text-center">
             {d}
@@ -110,22 +106,37 @@ export default function Agenda() {
 
       <div className="basis-0 grow grid grid-cols-7 gap-1 text-sm justify-center items-center">
         {semanas.map((semana, i) =>
-          semana.map((dia, j) => (
-            <div
-              key={`${i}-${j}`}
-              className="h-full border rounded-lg flex items-start justify-start px-2 py-1 bg-gray-50"
-            >
-              <span
-                className={`font-bold ${
-                  dia.mes === "actual"
-                    ? "text-gray-800"
-                    : "text-gray-400 opacity-60"
-                }`}
+          semana.map((dia, j) => {
+            const esHoy =
+              dia.numero === hoy.getDate() &&
+              mes === hoy.getMonth() &&
+              año === hoy.getFullYear() &&
+              dia.mes === "actual";
+
+            return (
+              <div
+                key={`${i}-${j}`}
+                className={`
+                  h-full rounded-lg flex items-start justify-start px-2 py-1 border
+                  ${dia.mes === "actual" ? "opacity-100" : "opacity-50"}
+                  ${
+                    esHoy
+                      ? "bg-pink-100 border-pink-100"
+                      : "bg-neutral-400 border-white"
+                  }
+                  shadow-inner shadow-white hover:brightness-110
+                `}
               >
-                {dia.numero}
-              </span>
-            </div>
-          ))
+                <span
+                  className={`font-bold ${
+                    dia.mes === "actual" ? "text-black" : "text-white"
+                  }`}
+                >
+                  {dia.numero}
+                </span>
+              </div>
+            );
+          })
         )}
       </div>
     </div>

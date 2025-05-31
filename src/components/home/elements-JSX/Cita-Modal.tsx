@@ -1,6 +1,11 @@
 import { useRef, useState, useEffect } from "preact/hooks";
+import type { ParrafoInfoProps, Cita, CitaModalProps } from "@utils/type-props";
 
-function ParrafoInfo({ title, description, classNames = "" }) {
+function ParrafoInfo({
+  title = "",
+  description = "",
+  classNames = "",
+}: ParrafoInfoProps) {
   const finalColor = classNames || "text-white/90";
 
   return (
@@ -14,7 +19,7 @@ function ParrafoInfo({ title, description, classNames = "" }) {
   );
 }
 
-function getEstadoColor(estado) {
+function getEstadoColor(estado: string) {
   switch (estado) {
     case "Pendiente":
       return "text-yellow-500";
@@ -29,9 +34,9 @@ function getEstadoColor(estado) {
   }
 }
 
-export default function CitaModal({ citas }) {
-  const dialogRef = useRef(null);
-  const [citaSeleccionada, setCitaSeleccionada] = useState(null);
+export default function CitaModal({ citas }: CitaModalProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
 
   const stylep = "w-full flex [&>p]:basis-full [&>p]:flex-wrap";
 
@@ -49,7 +54,7 @@ export default function CitaModal({ citas }) {
     }
   }, [citaSeleccionada]);
 
-  const openModal = (cita) => {
+  const openModal = (cita: Cita) => {
     setCitaSeleccionada(cita);
   };
 
@@ -70,7 +75,9 @@ export default function CitaModal({ citas }) {
               onClick={() => openModal(cita)}
             >
               <div className="flex flex-col basis-0 grow-1">
-                <h1 className="text-2xl font-signika font-bold text-pink-600">{title}</h1>
+                <h1 className="text-2xl font-signika font-bold text-pink-600">
+                  {title}
+                </h1>
                 <p className="text-xl text-dark/60">Paciente: {paciente}</p>
               </div>
               <div class="flex flex-col basis-0 grow-1 items-end">
