@@ -48,6 +48,7 @@ export interface ZIndex {
 }
 
 export interface Cita {
+  cod: string;
   title: string;
   paciente: string;
   fecha: string;

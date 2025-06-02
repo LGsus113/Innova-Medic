@@ -27,7 +27,7 @@ export default function TooltipCalendar({
               </p>
             </div>
             <p className="font-bold">
-              Cita {cita.estado}
+              Cita {cita.cod}: {cita.estado}
             </p>
           </li>
         ))}

@@ -6,6 +6,7 @@ import Recetas from "@src/components/home/elements-TSX/Recetas";
 export default function DynamicContent() {
   const citas = [
     {
+      cod: "01",
       title: "Consulta general",
       paciente: "María Rodriguez",
       medico: "Dr. Ana García",
@@ -17,6 +18,7 @@ export default function DynamicContent() {
       diagnostico: "Resfriado común",
     },
     {
+      cod: "02",
       title: "Seguimiento Cardiológico",
       paciente: "Juan Gonzáles",
       medico: "Dr. Ana García",

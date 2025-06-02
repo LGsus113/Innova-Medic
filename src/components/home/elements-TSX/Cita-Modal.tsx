@@ -99,7 +99,7 @@ export default function CitaModal({ citas }: CitaModalProps) {
           <div className="flex flex-col gap-5 h-full">
             <div className="w-full flex justify-between items-center shrink-0">
               <h2 className="text-5xl font-signika font-bold text-amber-100">
-                Detalles de Cita
+                Detalles de Cita {citaSeleccionada.cod}
               </h2>
               <form method="dialog" className="flex justify-end">
                 <button className="bg-pink-600 shadow-inner shadow-white/50 button-citas">

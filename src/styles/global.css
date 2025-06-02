@@ -32,6 +32,21 @@
   }
 }
 
+@layer utilities {
+  .rotate-animation {
+    animation: spin-slow 90s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
 .dialog-info-medic[open] {
   opacity: 1;
   scale: 1;
