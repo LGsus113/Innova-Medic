@@ -1,7 +1,7 @@
 import { activeSection } from "@src/utils/nav-state.tsx";
-import CitaModal from "@components/home/elements-JSX/Cita-Modal.tsx";
-import Agenda from "@components/home/elements-JSX/Agenda.tsx";
-import Recetas from "@components/home/elements-JSX/Recetas.tsx";
+import CitaModal from "@src/components/home/elements-TSX/Cita-Modal";
+import Agenda from "@src/components/home/elements-TSX/Agenda";
+import Recetas from "@src/components/home/elements-TSX/Recetas";
 
 export default function DynamicContent() {
   const citas = [

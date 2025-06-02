@@ -85,3 +85,14 @@ export interface TooltipCalendarProps {
   y: number;
   citas: Cita[];
 }
+
+export interface BotonMesProps {
+  onCLick: () => void;
+  children: string;
+}
+
+export interface SelectorMesProps {
+  año: number;
+  mes: number;
+  onChange: (año: number, mes: number) => void;
+}

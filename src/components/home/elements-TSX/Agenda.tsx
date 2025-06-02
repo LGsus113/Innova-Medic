@@ -1,6 +1,8 @@
 import { useState } from "preact/hooks";
 import { obtenerDiaDelMes } from "@utils/calendar-functions";
-import TooltipCalendar from "@components/home/elements-JSX/Tooltip-Calendar";
+import TooltipCalendar from "@src/components/home/elements-TSX/calendar/Tooltip-Calendar";
+import BotonMes from "@components/home/elements-TSX/calendar/Boton-Mes";
+import SelectorMes from "@components/home/elements-TSX/calendar/Selector-Mes";
 import type { CitaModalProps } from "@utils/type-props";
 
 export default function Agenda({ citas = [] }: CitaModalProps) {
@@ -32,20 +34,6 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
   };
 
   const semanas = obtenerDiaDelMes(año, mes, citas);
-  const meses = [
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre",
-  ];
 
   const citasDiaHover = diaHover
     ? semanas
@@ -75,28 +63,25 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
   return (
     <div className="calendar-container p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] text-center size-full flex flex-col gap-3 font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)] relative">
       <div className="w-full h-auto flex justify-between items-center">
-        <button
-          onClick={retrocederMes}
-          className="bg-pink-600 shadow-inner shadow-white px-3 py-1 rounded-lg button-citas"
-        >
-          Anterior
-        </button>
-        <span className="text-lg font-semibold text-white">
-          {meses[mes]} de {año}
-        </span>
-        <button
-          onClick={avanzarMes}
-          className="bg-pink-600 shadow-inner shadow-white px-3 py-1 rounded-lg button-citas"
-        >
-          Siguiente
-        </button>
+        <BotonMes onCLick={retrocederMes}>Anterior</BotonMes>
+
+        <SelectorMes
+          año={año}
+          mes={mes}
+          onChange={(nuevoAño, nuevoMes) => {
+            setAño(nuevoAño);
+            setMes(nuevoMes);
+          }}
+        />
+
+        <BotonMes onCLick={avanzarMes}>Siguiente</BotonMes>
       </div>
 
       <div className="w-full h-auto grid grid-cols-7 text-md text-white/50">
         {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((d) => (
-          <div key={d} className="text-center">
+          <h1 key={d} className="text-center">
             {d}
-          </div>
+          </h1>
         ))}
       </div>
 
@@ -116,16 +101,14 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
                   dia.mes === "actual" && handleDiaMouseEnter(dia.numero, e)
                 }
                 onMouseLeave={handleDiaMouseLeave}
-                className={`
-                  h-full rounded-lg flex items-start justify-start px-2 py-1 border relative
+                className={`h-full rounded-lg flex items-start justify-start px-2 py-1 border relative
                   ${dia.mes === "actual" ? "opacity-100" : "opacity-50"}
                   ${
                     esHoy
                       ? "bg-pink-100 border-pink-100"
                       : "bg-neutral-400 border-white"
                   }
-                  shadow-inner shadow-white hover:brightness-110
-                `}
+                  shadow-inner shadow-white hover:brightness-110`}
               >
                 <span
                   className={`font-bold ${
