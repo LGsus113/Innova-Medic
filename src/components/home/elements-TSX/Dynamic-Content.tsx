@@ -33,7 +33,9 @@ export default function DynamicContent() {
 
   return (
     <>
-      <h1 className="font-signika text-3xl text-white font-bold">
+      <h1
+        className="font-signika text-3xl text-white font-bold"
+      >
         {
           {
             citas: "Citas Pendientes",

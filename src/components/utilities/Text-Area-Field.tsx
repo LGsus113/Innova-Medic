@@ -13,7 +13,7 @@ export default function TextAreaField({
         name={id}
         placeholder={placeholder}
         className="text-area-style"
-        rows={3}
+        rows={4}
       ></textarea>
     </div>
   );

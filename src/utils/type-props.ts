@@ -104,3 +104,8 @@ export interface SelectorMesProps {
   mes: number;
   onChange: (año: number, mes: number) => void;
 }
+
+export interface ButtonProps {
+  title: string;
+  tipo?: 1 | 2;
+}
