@@ -27,7 +27,7 @@ import User from "@assets/icon-svg/user.svg";
         class="card-3d-wrap mx-auto relative w-[440px] max-w-full h-[400px] mt-[60px]"
       >
         <div class="card-3d-wrapper size-full absolute top-0 left-0">
-          <div class="card-front back-front">
+          <div class="card-front back-front customer-bg">
             <Wrap title="Log in">
               <InputField
                 type="email"
@@ -47,7 +47,7 @@ import User from "@assets/icon-svg/user.svg";
               </InputField>
             </Wrap>
           </div>
-          <div class="card-back back-front">
+          <div class="card-back back-front customer-bg">
             <Wrap title="Sign up">
               <InputField
                 type="text"
@@ -144,10 +144,6 @@ import User from "@assets/icon-svg/user.svg";
   .card-front,
   .card-back {
     background-color: var(--color-dark);
-    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg");
-    background-position: bottom center;
-    background-repeat: no-repeat;
-    background-size: 300%;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     -webkit-backface-visibility: hidden;

@@ -1,12 +1,6 @@
-type AstroComponent = () => Promise<{ html: string }>;
-export interface SetupProps {
-  MainComponent: AstroComponent;
-}
+import type { ComponentChildren } from "preact";
 
-export interface LayoutProps {
-  title?: string;
-  description?: string;
-}
+type AstroComponent = () => Promise<{ html: string }>;
 
 type InputType =
   | "text"
@@ -29,11 +23,6 @@ type InputType =
   | "reset"
   | "submit"
   | "button";
-export interface InputField {
-  type?: InputType;
-  placeholder?: string;
-  id?: string;
-}
 
 type ZIndexTailwind =
   | `z-${number}`
@@ -41,7 +30,25 @@ type ZIndexTailwind =
   | `-z-${number}`
   | `-z-[${string}]`
   | "";
+
 type PositionTailwind = "static" | "relative" | "absolute" | "fixed" | "sticky";
+
+export interface SetupProps {
+  MainComponent: AstroComponent;
+}
+
+export interface LayoutProps {
+  title?: string;
+  description?: string;
+}
+
+export interface InputField {
+  type?: InputType;
+  placeholder?: string;
+  id?: string;
+  children?: ComponentChildren;
+}
+
 export interface ZIndex {
   superposition?: ZIndexTailwind;
   positionContener?: PositionTailwind;
