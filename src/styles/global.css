@@ -33,6 +33,10 @@
 }
 
 @layer utilities {
+  .text-shadow-custom {
+    text-shadow: 0 7px 5px rgba(0, 0, 0, 0.4), 0 -5px 1px #fff;
+  }
+
   .rotate-animation {
     animation: spin-slow 90s linear infinite;
   }
