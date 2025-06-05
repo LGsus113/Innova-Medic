@@ -10,7 +10,7 @@ import IDSVG from "@assets/icon-svg/id.svg?url";
 
 export default function Recetas() {
   return (
-    <div class="size-full bg-dark rounded-xl shadow-[inset_0_0_5px_3px_rgba(0,0,0,0.70)] customer-bg">
+    <div class="size-full bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] rounded-xl shadow-[inset_0_0_5px_3px_rgba(0,0,0,0.70)]">
       <form className="size-full flex flex-col justify-between p-5">
         <InputField
           type="text"
@@ -48,8 +48,12 @@ export default function Recetas() {
             className="invert size-9"
           />
         </InputField>
-        <div className="flex justify-between gap-5 p-5 shadow-inner shadow-black/75 bg-dark">
-          <InputField type="text" placeholder="El codigo de cita es..." id="code">
+        <div className="flex items-center justify-between gap-5 pt-5 px-5">
+          <InputField
+            type="text"
+            placeholder="El codigo de cita es..."
+            id="code"
+          >
             <img
               src={IDSVG}
               alt="icono de identificador en input"

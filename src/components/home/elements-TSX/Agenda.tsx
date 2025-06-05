@@ -77,7 +77,7 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
         <BotonMes onCLick={avanzarMes}>Siguiente</BotonMes>
       </div>
 
-      <div className="w-full h-auto grid grid-cols-7 text-md text-white/50">
+      <div className="w-full h-auto grid grid-cols-7 text-md text-white/60">
         {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((d) => (
           <h1 key={d} className="text-center">
             {d}
