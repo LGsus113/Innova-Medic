@@ -55,16 +55,35 @@ export interface ZIndex {
 }
 
 export interface Cita {
-  cod: string;
-  title: string;
-  paciente: string;
+  idCitas: number;
+  medico: {
+    idUsuario: number;
+    nombre: string;
+    apellido: string;
+    especialidad: string;
+  };
+  paciente: {
+    idUsuario: number;
+    nombre: string;
+    apellido: string;
+    grupoSanguineo?: string; // Opcional por si no siempre viene
+  };
   fecha: string;
   hora: string;
-  duracion: string;
-  medico: string;
-  estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
-  notas: string;
+  tratamiento: string; // Antes era "title"
+  notasMedicas: string; // Antes era "notas"
   diagnostico: string;
+  estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
+  recetaDTO?: { // Opcional por si no todas las citas tienen receta
+    idReceta: number;
+    instruccionesAdicionales: string;
+    firmaMedico: string;
+    fecha: string;
+    medicamentos: Array<{
+      idMedicamento: number;
+      medicamento: string;
+    }>;
+  };
 }
 
 export interface ParrafoInfoProps {
@@ -87,11 +106,18 @@ export interface DiaCalendarioConCitas extends DiaCalendario {
   citas?: Cita[];
 }
 
+interface CitaTooltip {
+  id: number;
+  paciente: string;
+  hora: string;
+  estado: string;
+}
+
 export interface TooltipCalendarProps {
   dia: number;
   x: number;
   y: number;
-  citas: Cita[];
+  citas: CitaTooltip[];
 }
 
 export interface BotonMesProps {

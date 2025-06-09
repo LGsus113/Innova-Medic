@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { obtenerDiaDelMes } from "@utils/calendar-functions";
 import TooltipCalendar from "@src/components/home/elements-TSX/calendar/Tooltip-Calendar";
 import BotonMes from "@components/home/elements-TSX/calendar/Boton-Mes";
@@ -14,6 +14,12 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
     x: number;
     y: number;
   } | null>(null);
+
+  useEffect(() => {
+    return () => {
+      setDiaHover(null);
+    };
+  }, []);
 
   const avanzarMes = () => {
     if (mes === 11) {
@@ -38,22 +44,18 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
   const citasDiaHover = diaHover
     ? semanas
         .flat()
-        .find((d) => d.numero === diaHover.dia && d.mes === "actual")?.citas
+        .find((d) => d.numero === diaHover.dia && d.mes === "actual")?.citas || []
     : [];
 
   const handleDiaMouseEnter = (dia: number, e: MouseEvent) => {
     const target = e.currentTarget as HTMLElement;
-    const calendarContainer = target.closest(".calendar-container");
-    const containerRect = calendarContainer?.getBoundingClientRect();
     const rect = target.getBoundingClientRect();
 
-    if (containerRect) {
-      setDiaHover({
-        dia,
-        x: rect.left - containerRect.left + rect.width / 2,
-        y: rect.top - containerRect.top,
-      });
-    }
+    setDiaHover({
+      dia,
+      x: rect.left + window.scrollX,
+      y: rect.top + window.scrollY + rect.height,
+    });
   };
 
   const handleDiaMouseLeave = () => {
@@ -126,12 +128,17 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
         )}
       </div>
 
-      {diaHover && citasDiaHover && citasDiaHover.length > 0 && (
+      {diaHover && citasDiaHover.length > 0 && (
         <TooltipCalendar
           dia={diaHover.dia}
           x={diaHover.x}
           y={diaHover.y}
-          citas={citasDiaHover}
+          citas={citasDiaHover.map((cita) => ({
+            id: cita.idCitas,
+            paciente: `${cita.paciente.nombre} ${cita.paciente.apellido}`,
+            hora: cita.hora,
+            estado: cita.estado,
+          }))}
         />
       )}
     </div>
