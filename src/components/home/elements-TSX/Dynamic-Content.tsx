@@ -2,35 +2,14 @@ import { activeSection } from "@src/utils/nav-state.tsx";
 import CitaModal from "@src/components/home/elements-TSX/Cita-Modal";
 import Agenda from "@src/components/home/elements-TSX/Agenda";
 import Recetas from "@src/components/home/elements-TSX/Recetas";
-import { useState, useEffect } from "preact/hooks";
-import { apiClient } from "@src/api/client";
-import { ENDPOINTS } from "@src/api/endpoints";
+import ErrorComponent from "@components/utilities/Error-Component";
+import LoadingComponent from "@components/utilities/Loading-Component";
+import { useCitasList } from "@utils/list-hooks";
 
 export default function DynamicContent() {
-  const [citas, setCitas] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const medicoId = 1;
-
-  useEffect(() => {
-    const fetchCitas = async () => {
-      try {
-        const data = await apiClient(ENDPOINTS.CITA_MEDICO.LIST(medicoId));
-        setCitas(data);
-      } catch (err) {
-        const error =
-          err instanceof Error ? err : new Error("Error desconocido");
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCitas();
-  }, [medicoId]);
-
-  if (loading) return <p>Cargando citas...</p>;
-  if (error) return <p className="text-red-500">{error}</p>
+  const section = activeSection.value;
+  const { citas, loading, error } = useCitasList(medicoId);
 
   return (
     <>
@@ -40,16 +19,21 @@ export default function DynamicContent() {
             citas: "Citas Pendientes",
             agenda: "Agenda de Ana Garcia",
             recetas: "Recetas",
-          }[activeSection.value]
+          }[section]
         }
       </h1>
-      {
-        {
-          citas: <CitaModal citas={citas} />,
-          agenda: <Agenda citas={citas} />,
-          recetas: <Recetas />,
-        }[activeSection.value]
-      }
+
+      {section === "citas" && (
+        <>
+          {loading && <LoadingComponent />}
+          {error && <ErrorComponent error={error} />}
+          {!loading && !error && <CitaModal citas={citas} />}
+        </>
+      )}
+
+      {section === "agenda" && <Agenda citas={citas} />}
+
+      {section === "recetas" && <Recetas />}
     </>
   );
 }
