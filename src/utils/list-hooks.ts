@@ -7,22 +7,36 @@ export function useCitasList(medicoId: number) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchCitas = async () => {
-      try {
-        const data = await apiClient(ENDPOINTS.CITA_MEDICO.LIST(medicoId));
-        setCitas(data);
-      } catch (err) {
-        const error =
-          err instanceof Error ? err : new Error("Error desconocido");
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchCitas = async () => {
+    setLoading(true);
+    setError(null);
 
+    try {
+      const data = await apiClient(ENDPOINTS.CITA_MEDICO.LIST(medicoId));
+      setCitas(data);
+    } catch (err) {
+      let message = "Ocurrió un error inesperado.";
+
+      if (err instanceof Error) {
+        if (err.message.includes("Failed to fetch")) {
+          message =
+            "No se pudo conectar con el servidor. Verifica tu conexión.";
+        } else if (err.message.includes("timeout")) {
+          message = "La solicitud tardó demasiado. Intentalo denuevo.";
+        } else {
+          message = err.message;
+        }
+      }
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCitas();
   }, [medicoId]);
 
-  return { citas, loading, error };
+  return { citas, loading, error, refetch: fetchCitas };
 }

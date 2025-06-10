@@ -9,7 +9,7 @@ import { useCitasList } from "@utils/list-hooks";
 export default function DynamicContent() {
   const medicoId = 1;
   const section = activeSection.value;
-  const { citas, loading, error } = useCitasList(medicoId);
+  const { citas, loading, error, refetch } = useCitasList(medicoId);
 
   return (
     <>
@@ -26,7 +26,7 @@ export default function DynamicContent() {
       {section === "citas" && (
         <>
           {loading && <LoadingComponent />}
-          {error && <ErrorComponent error={error} />}
+          {error && <ErrorComponent error={error} onRetry={refetch} />}
           {!loading && !error && <CitaModal citas={citas} />}
         </>
       )}
