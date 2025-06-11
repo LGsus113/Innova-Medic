@@ -134,7 +134,7 @@
 }
 .form-style,
 .text-area-style {
-  @apply p-[13px_20px] w-full font-medium rounded-sm text-sm outline-none border-none;
+  @apply p-[13px_20px] w-full font-medium rounded-sm text-sm outline-none;
   line-height: 22px;
   letter-spacing: 0.5px;
   color: white;

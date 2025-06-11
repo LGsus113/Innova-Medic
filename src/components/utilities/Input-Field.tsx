@@ -7,9 +7,10 @@ export default function InputField({
   value,
   onInput,
   children,
+  className,
 }: InputField) {
   return (
-    <div className="form-group">
+    <div className={`form-group ${className}`}>
       {children}
       <input
         type={type}

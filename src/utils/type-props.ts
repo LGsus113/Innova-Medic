@@ -49,6 +49,7 @@ export interface InputField {
   value?: string;
   onInput?: (e: Event) => void;
   children?: ComponentChildren;
+  className?: string;
 }
 
 export interface ZIndex {

@@ -8,13 +8,24 @@ import Lock from "@assets/icon-svg/lock.svg?url";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
 
+    if (!email.trim() || !password.trim()) {
+      setEmailError(!email.trim());
+      setPasswordError(!password.trim());
+      alert("Los campos son obligatorios");
+      return;
+    } else {
+      setEmailError(false);
+      setPasswordError(false);
+    }
+
     try {
       const user = await login(email, password);
-      console.log("Usuario logueado:", user);
 
       alert(`Bienvenido(a) al sistema, ${user.nombre} ${user.apellido}`);
 
@@ -47,6 +58,7 @@ export default function LoginForm() {
           id="emailUsuario"
           value={email}
           onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
+          className={emailError ? "border border-red-500" : ""}
         >
           <img src={Arroba} alt="imagen de arroba" className="invert size-9" />
         </InputField>
@@ -56,6 +68,7 @@ export default function LoginForm() {
           id="passwordUsuario"
           value={password}
           onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+          className={passwordError ? "border border-red-500" : ""}
         >
           <img src={Lock} alt="imagen de candado" className="invert size-9" />
         </InputField>
