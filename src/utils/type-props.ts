@@ -77,7 +77,8 @@ export interface Cita {
   notasMedicas: string; // Antes era "notas"
   diagnostico: string;
   estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
-  recetaDTO?: { // Opcional por si no todas las citas tienen receta
+  recetaDTO?: {
+    // Opcional por si no todas las citas tienen receta
     idReceta: number;
     instruccionesAdicionales: string;
     firmaMedico: string;
@@ -137,4 +138,11 @@ export interface SelectorMesProps {
 export interface ButtonProps extends JSX.HTMLAttributes<HTMLButtonElement> {
   title: string;
   tipo?: 1 | 2;
+}
+
+export interface UsuarioValidado {
+  idUsuario: number;
+  nombre: string;
+  apellido: string;
+  rol: string;
 }

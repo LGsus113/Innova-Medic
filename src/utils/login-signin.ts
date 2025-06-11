@@ -1,5 +1,17 @@
 import { apiClient } from "@src/api/client";
 import { ENDPOINTS } from "@src/api/endpoints";
+import type { UsuarioValidado } from "@utils/type-props";
+
+function getUsuarioFromStorage(): UsuarioValidado | null {
+  try {
+    const stored = localStorage.getItem("usuario");
+    if (!stored) return null;
+    return JSON.parse(stored);
+  } catch (error) {
+    console.log("Error al parsear el usuario desde el localStorage");
+    return null;
+  }
+}
 
 export async function login(email: string, password: string) {
   try {
@@ -27,11 +39,24 @@ export async function login(email: string, password: string) {
   }
 }
 
+export function getUsuarioId(): number {
+  const usuario = getUsuarioFromStorage();
+  return typeof usuario?.idUsuario === "number" ? usuario.idUsuario : 0;
+}
+
+export function getUsuarioNombreCompleto(): string | null {
+  const usuario = getUsuarioFromStorage();
+
+  if (
+    typeof usuario?.nombre === "string" &&
+    typeof usuario?.apellido === "string"
+  )
+    return `${usuario.nombre} ${usuario.apellido}`;
+
+  return null;
+}
+
 export function getUsuarioRol(): string | null {
-  try {
-    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    return usuario?.rol || null;
-  } catch (err) {
-    return null;
-  }
+  const usuario = getUsuarioFromStorage();
+  return typeof usuario?.rol === "string" ? usuario.rol : null;
 }

@@ -22,12 +22,10 @@ import Information from "@components/utilities/header/Information.astro";
 
 <script>
   import { $ } from "@utils/dom-selector";
-  const user = JSON.parse(localStorage.getItem("usuario") || "null");
+  import { getUsuarioNombreCompleto } from "@utils/login-signin";
 
-  if (user) {
-    const nombreCompleto = `${user.nombre} ${user.apellido}`;
-    $("#nombre-usuario").textContent = nombreCompleto;
-  } else {
-    $("#nombre-usuario").textContent = "Invitado";
-  }
+  window.addEventListener("DOMContentLoaded", () => {
+    const el = $("#nombre-usuario");
+    if (el) el.textContent = getUsuarioNombreCompleto() ?? "Invitado";
+  });
 </script>

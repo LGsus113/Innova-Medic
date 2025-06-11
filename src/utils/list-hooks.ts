@@ -1,19 +1,19 @@
 import { useState, useEffect } from "preact/hooks";
 import { apiClient } from "@src/api/client";
-import { ENDPOINTS } from "@src/api/endpoints";
 
-export function useCitasList(medicoId: number) {
-  const [citas, setCitas] = useState([]);
+export function useCitasList(endpoint: string | null) {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCitas = async () => {
+  const fetchData = async () => {
+    if (!endpoint) return;
     setLoading(true);
     setError(null);
 
     try {
-      const data = await apiClient(ENDPOINTS.CITA_MEDICO.LIST(medicoId));
-      setCitas(data);
+      const data = await apiClient(endpoint);
+      setData(data);
     } catch (err) {
       let message = "Ocurrió un error inesperado.";
 
@@ -35,8 +35,8 @@ export function useCitasList(medicoId: number) {
   };
 
   useEffect(() => {
-    fetchCitas();
-  }, [medicoId]);
+    if (endpoint) fetchData();
+  }, [endpoint]);
 
-  return { citas, loading, error, refetch: fetchCitas };
+  return { data, loading, error, refetch: fetchData };
 }

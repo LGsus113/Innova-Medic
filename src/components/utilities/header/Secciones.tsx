@@ -13,9 +13,8 @@ export default function Secciones() {
         ]
       : rol === "Paciente"
       ? [
-          { label: "Reservar Cita", key: "reservar" },
-          { label: "Mis Recetas", key: "misRecetas" },
-          { label: "Mis pagos", key: "misPagos" },
+          { label: "Mis Citas", key: "citas" },
+          { label: "Reservar", key: "reservar" },
         ]
       : [];
 

@@ -1,15 +1,32 @@
+import { useCitasList } from "@utils/list-hooks";
+import { useEffect, useState } from "preact/hooks";
+import { getUsuarioId, getUsuarioRol } from "@utils/login-signin";
+import { ENDPOINTS } from "@src/api/endpoints";
 import { activeSection } from "@src/utils/nav-state.tsx";
 import CitaModal from "@src/components/home/elements-TSX/Cita-Modal";
 import Agenda from "@src/components/home/elements-TSX/Agenda";
 import Recetas from "@src/components/home/elements-TSX/Recetas";
 import ErrorComponent from "@components/utilities/Error-Component";
 import LoadingComponent from "@components/utilities/Loading-Component";
-import { useCitasList } from "@utils/list-hooks";
 
 export default function DynamicContent() {
-  const medicoId = 1;
+  const [endpoint, setEndpoint] = useState<string | null>(null);
   const section = activeSection.value;
-  const { citas, loading, error, refetch } = useCitasList(medicoId);
+
+  useEffect(() => {
+    const id = getUsuarioId();
+    const rol = getUsuarioRol();
+
+    if (rol === "Medico") {
+      setEndpoint(ENDPOINTS.USUARIO.LIST_CITA_MEDICO(id));
+    } else if (rol === "Paciente") {
+      setEndpoint(ENDPOINTS.USUARIO.LIST_CITA_PACIENTE(id));
+    } else {
+      setEndpoint(null);
+    }
+  }, []);
+
+  const { data, loading, error, refetch } = useCitasList(endpoint);
 
   return (
     <>
@@ -19,6 +36,7 @@ export default function DynamicContent() {
             citas: "Citas Pendientes",
             agenda: "Agenda de Ana Garcia",
             recetas: "Recetas",
+            reservar: "Reservar Cita",
           }[section]
         }
       </h1>
@@ -27,13 +45,15 @@ export default function DynamicContent() {
         <>
           {loading && <LoadingComponent />}
           {error && <ErrorComponent error={error} onRetry={refetch} />}
-          {!loading && !error && <CitaModal citas={citas} />}
+          {!loading && !error && <CitaModal citas={data} />}
         </>
       )}
 
-      {section === "agenda" && <Agenda citas={citas} />}
+      {section === "agenda" && <Agenda citas={data} />}
 
       {section === "recetas" && <Recetas />}
+
+      {section === "reservar" && <p>Hola reservas...</p>}
     </>
   );
 }
