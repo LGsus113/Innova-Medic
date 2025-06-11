@@ -1,4 +1,4 @@
-import type { ComponentChildren } from "preact";
+import type { ComponentChildren, JSX } from "preact";
 
 type AstroComponent = () => Promise<{ html: string }>;
 
@@ -46,6 +46,8 @@ export interface InputField {
   type?: InputType;
   placeholder?: string;
   id?: string;
+  value?: string;
+  onInput?: (e: Event) => void;
   children?: ComponentChildren;
 }
 
@@ -131,7 +133,7 @@ export interface SelectorMesProps {
   onChange: (año: number, mes: number) => void;
 }
 
-export interface ButtonProps {
+export interface ButtonProps extends JSX.HTMLAttributes<HTMLButtonElement> {
   title: string;
   tipo?: 1 | 2;
 }

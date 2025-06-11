@@ -37,7 +37,7 @@ export default function CitaModal({ citas }: CitaModalProps) {
           return (
             <article
               key={i}
-              className="w-full h-auto p-3 bg-white/80 rounded-lg flex shadow-inner shadow-black/50 cursor-pointer hover:bg-white/70 transition"
+              className="w-full h-auto p-3 bg-white/80 rounded-lg flex border-l-[5px] border-pink-600 shadow-inner shadow-black/50 cursor-pointer hover:bg-white/70 transition"
               onClick={() => openModal(cita)}
             >
               <div className="flex flex-col basis-0 grow-1">

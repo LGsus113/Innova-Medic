@@ -4,6 +4,8 @@ export default function InputField({
   type,
   placeholder,
   id,
+  value,
+  onInput,
   children,
 }: InputField) {
   return (
@@ -16,6 +18,8 @@ export default function InputField({
         placeholder={placeholder}
         id={id}
         autoComplete="off"
+        value={value}
+        onInput={onInput}
       />
     </div>
   );

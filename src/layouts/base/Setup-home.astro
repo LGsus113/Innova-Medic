@@ -17,3 +17,10 @@ const { title, description, MainComponent } = Astro.props as CombinatedProps;
     <Footer slot="footer" />
   </Display>
 </Layout>
+
+<script>
+  const user = JSON.parse(localStorage.getItem("usuario") || "null");
+  if (!user) {
+    window.location.href = "/";
+  }
+</script>

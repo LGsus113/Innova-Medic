@@ -2,6 +2,7 @@
 import InputField from "@components/login/elements/Input-Field.astro";
 import MarcaLogo from "@components/login/elements/Marca-Logo.astro";
 import Wrap from "@components/login/elements/Wrap.astro";
+import LoginForm from "@components/login/elements/Login-Form";
 
 import Arroba from "@assets/icon-svg/@.svg";
 import Lock from "@assets/icon-svg/lock.svg";
@@ -9,9 +10,7 @@ import User from "@assets/icon-svg/user.svg";
 ---
 
 <MarcaLogo superposition="z-50" />
-<div
-  class="z-20 relative w-full block overflow-hidden"
->
+<div class="z-20 relative w-full block overflow-hidden">
   <div class="w-full min-h-screen flex justify-center items-center">
     <div class="relative w-full block my-auto text-center">
       <h6
@@ -29,22 +28,7 @@ import User from "@assets/icon-svg/user.svg";
         <div class="card-3d-wrapper size-full absolute top-0 left-0">
           <div class="card-front back-front customer-bg">
             <Wrap title="Log in">
-              <InputField
-                type="email"
-                name="logemail"
-                placeholder="Tu correo"
-                id="logemail"
-              >
-                <Arroba class="input-icon text-white" />
-              </InputField>
-              <InputField
-                type="password"
-                name="logpass"
-                placeholder="Tu contraseña"
-                id="logpass"
-              >
-                <Lock class="input-icon text-white" />
-              </InputField>
+              <LoginForm client:load />
             </Wrap>
           </div>
           <div class="card-back back-front customer-bg">
@@ -150,7 +134,9 @@ import User from "@assets/icon-svg/user.svg";
     -moz-backface-visibility: hidden;
     -o-backface-visibility: hidden;
     backface-visibility: hidden;
-    box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.75), inset 0 0 7px rgba(0, 0, 0, 0.8);
+    box-shadow:
+      0 0 20px 0 rgba(255, 255, 255, 0.75),
+      inset 0 0 7px rgba(0, 0, 0, 0.8);
   }
   .card-back {
     transform: rotateY(180deg);

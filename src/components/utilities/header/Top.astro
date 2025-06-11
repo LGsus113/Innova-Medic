@@ -11,11 +11,23 @@ import Information from "@components/utilities/header/Information.astro";
     <h1 class="font-signika text-lg text-white">
       Hola,
       <span
+        id="nombre-usuario"
         class="font-bold text-xl underline decoration-2 decoration-pink-300 underline-offset-[4px]"
       >
-        Dr. Ana Garcia
       </span>
     </h1>
     <Information />
   </div>
 </div>
+
+<script>
+  import { $ } from "@utils/dom-selector";
+  const user = JSON.parse(localStorage.getItem("usuario") || "null");
+
+  if (user) {
+    const nombreCompleto = `${user.nombre} ${user.apellido}`;
+    $("#nombre-usuario").textContent = nombreCompleto;
+  } else {
+    $("#nombre-usuario").textContent = "Invitado";
+  }
+</script>

@@ -1,26 +1,17 @@
 ---
-import Button from "@components/utilities/Button";
 const { title } = Astro.props;
 ---
 
 <div class="center-wrap card-wrap">
   <div class="relative w-full block text-center">
-    <h4
-      class="mb-5 text-4xl text-white font-Cherry-Bomb"
-    >
+    <h4 class="mb-5 text-4xl text-white font-Cherry-Bomb">
       {title}
     </h4>
-    <div class="w-full h-auto flex flex-col gap-2">
-      <slot />
-    </div>
-    <Button title="Aceptar" client:load/>
+    <slot />
     {
       title === "Log in" && (
         <p class="text-center mt-1 font-bold text-md font-signika">
-          <a
-            href="#0"
-            class="text-light-dark hover:text-tertiary"
-          >
+          <a href="#0" class="text-light-dark hover:text-tertiary">
             ¿Olvidaste tu contraseña?
           </a>
         </p>

@@ -1,10 +1,10 @@
 ---
-import SetupHome from "@layouts/base/Setup-home.astro";
-import Welcome from "@components/home/Inicio.astro";
+import SetupLogin from "@layouts/base/Setup-login.astro";
+import LoginHome from "@components/login/Login-home.astro";
 ---
 
-<SetupHome
-  title="Home"
-  description="Pagina de inicio del sistema Innova Medic para su uso tanto para pacientes como para los medicos."
-  MainComponent={Welcome}
+<SetupLogin
+  title="Login"
+  description="Pagina de sesion para Innova Medic, tanto medicos como pacientes."
+  MainComponent={LoginHome}
 />

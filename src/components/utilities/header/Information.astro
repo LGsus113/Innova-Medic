@@ -20,7 +20,7 @@ import User from "@assets/icon-svg/user.svg";
   class="hidden flex-col font-signika absolute top-full right-0 mt-2 bg-pink-600 text-white text-lg rounded-b-sm px-4 py-2 z-40 shadow-inner shadow-pink-300"
 >
   <button>Perfil</button>
-  <button>Cerrar sesion</button>
+  <button id="cerrarSesionBtn">Cerrar sesion</button>
 </div>
 
 <style>
@@ -40,6 +40,8 @@ import User from "@assets/icon-svg/user.svg";
 </style>
 
 <script>
+  import { $ } from "@utils/dom-selector";
+
   const toggle = document.getElementById("toggleMenu");
   const arrow = document.getElementById("arrow");
   const menu = document.getElementById("menu");
@@ -59,5 +61,11 @@ import User from "@assets/icon-svg/user.svg";
 
     arrow?.classList.toggle("rotate-90", open); // ▼
     arrow?.classList.toggle("rotate-180", !open); // ◀
+  });
+
+  const cerrarBtn = $("#cerrarSesionBtn");
+  cerrarBtn?.addEventListener("click", () => {
+    localStorage.removeItem("usuario");
+    window.location.href = "/";
   });
 </script>
