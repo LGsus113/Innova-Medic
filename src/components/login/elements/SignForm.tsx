@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRegisterPaciente } from "@src/api/implements/register-p-hook";
+import { useAuthContext } from "@src/context/AuthContext";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";
 import Name from "@src/assets/name.svg?react";
@@ -62,6 +64,8 @@ export default function SignForm() {
   };
 
   const { registrarPaciente, loading } = useRegisterPaciente();
+  const { login } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleAceppt = async (e: FormEvent) => {
     e.preventDefault();
@@ -101,6 +105,14 @@ export default function SignForm() {
     }
 
     alert("✅ " + result.message);
+
+    try {
+      await login(formData.email, formData.contrasenia);
+      navigate("/home");
+    } catch (e) {
+      console.error("Error al iniciar sesión automáticamente:", e);
+      alert("Registro completado, pero el inicio de sesión falló.");
+    }
 
     setFormData({
       nombre: "",
