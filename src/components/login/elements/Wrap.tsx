@@ -2,7 +2,7 @@ import type { WrapProps } from "@src/types/type";
 
 export default function Wrap({ title, children }: WrapProps) {
   return (
-    <div className="center-wrap card-wrap transform translate-y-[-50%] translate-z-[35px] perspective-[100px]">
+    <div className="card-wrap transform translate-y-[-50%] translate-z-[35px] perspective-[100px]">
       <div className="relative w-full block text-center">
         <h4 className="mb-5 text-4xl text-white font-Cherry-Bomb">{title}</h4>
       </div>

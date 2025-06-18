@@ -6,6 +6,9 @@ import type {
   UsuarioValidado,
   PerfilUsuario,
   SessionData,
+  PerfilMedico,
+  PerfilPaciente,
+  ApiResponse,
   AuthContextType,
 } from "@src/types/type";
 
@@ -97,11 +100,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return perfil;
       }
 
-      const response = await fetchData(
+      const response = await fetchData<ApiResponse<PerfilUsuario>>(
         ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
       );
-      updateSession({ perfil: response.user });
 
+      if (user.rol === "Medico") {
+        const perfilMedico = response.user as PerfilMedico;
+        if (!perfilMedico.especialidad || !perfilMedico.numeroColegiado) {
+          throw new Error("Perfil de médico incompleto");
+        }
+      } else if (user.rol === "Paciente") {
+        const perfilPaciente = response.user as PerfilPaciente;
+        if (!perfilPaciente.fechaNacimiento || !perfilPaciente.talla) {
+          throw new Error("Perfil de paciente incompleto");
+        }
+      }
+
+      updateSession({ perfil: response.user });
       return response.user;
     } catch (error) {
       setError("Error al cargar el perfil");

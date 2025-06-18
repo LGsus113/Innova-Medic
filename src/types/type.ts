@@ -65,20 +65,37 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tipo?: 1 | 2;
 }
 
-export interface PerfilUsuario {
+export interface PerfilBase {
   sexo: string;
   telefono: string;
   email: string;
-  especialidad?: string;
-  numeroColegiado?: string;
 }
+
+export interface PerfilMedico extends PerfilBase {
+  especialidad: string;
+  numeroColegiado: string;
+}
+
+export interface PerfilPaciente extends PerfilBase {
+  fechaNacimiento: string;
+  talla: string;
+  grupoSanguineo: string;
+  direccion: string;
+}
+
+export type PerfilUsuario = PerfilMedico | PerfilPaciente;
 
 export interface UsuarioValidado {
   idUsuario: number;
   nombre: string;
   apellido: string;
-  rol: string;
+  rol: "Medico" | "Paciente";
   perfil?: PerfilUsuario;
+}
+
+export interface ApiResponse<T> {
+  status: string;
+  user: T;
 }
 
 export interface ApiOptions {

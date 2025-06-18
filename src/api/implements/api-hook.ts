@@ -2,7 +2,10 @@ import { apiClient } from "@src/api/client";
 import type { ApiOptions } from "@src/types/type";
 
 export function useApi() {
-  const fetchData = async (endpoint: string, options: ApiOptions = {}) => {
+  const fetchData = async <T = any>(
+    endpoint: string,
+    options: ApiOptions = {}
+  ): Promise<T> => {
     try {
       const data = await apiClient(endpoint, options);
 
