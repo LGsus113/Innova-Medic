@@ -5,7 +5,6 @@ export default function NombreUsuario() {
 
   return (
     <h1 className="font-signika text-lg text-white">
-      Hola,{" "}
       <span className="font-bold text-xl underline decoration-2 decoration-pink-300 underline-offset-[4px]">
         {fullName || "Invitado"}
       </span>

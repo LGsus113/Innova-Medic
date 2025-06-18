@@ -2,11 +2,11 @@ import InputField from "@src/components/utils/Input-Field";
 import TextAreaField from "@src/components/utils/Text-Area-Field";
 import Button from "@src/components/utils/Button";
 
-import BodyScan from "@src/assets/body-scan.svg?react";
-import Notes from "@src/assets/notes.svg?react";
-import Medicine from "@src/assets/medicine.svg?react";
-import Recomendation from "@src/assets/recomendation.svg?react";
-import IDSVG from "@src/assets/id.svg?react";
+import BodyScan from "@src/assets/svg/body-scan.svg?react";
+import Notes from "@src/assets/svg/notes.svg?react";
+import Medicine from "@src/assets/svg/medicine.svg?react";
+import Recomendation from "@src/assets/svg/recomendation.svg?react";
+import IDSVG from "@src/assets/svg/id.svg?react";
 
 export default function Receta() {
   return (

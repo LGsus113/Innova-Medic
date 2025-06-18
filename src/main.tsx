@@ -6,6 +6,7 @@ import PrivateRoute from "@src/context/PrivateRoute";
 import "@src/style/index.css";
 import App from "@src/App.tsx";
 import Home from "@src/Home.tsx";
+import Profile from "@src/Profile";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,14 @@ createRoot(document.getElementById("root")!).render(
             element={
               <PrivateRoute>
                 <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />

@@ -1,4 +1,4 @@
-import Alert from "@src/assets/alert.svg?react";
+import Alert from "@src/assets/svg/alert.svg?react";
 
 export default function ErrorComponent({
   error,

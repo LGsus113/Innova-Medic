@@ -1,4 +1,4 @@
-import ContainerHeader from "@src/components/utils/ContainerHeader";
+import ContainerHeader from "@src/components/utils/HeaderCentration";
 import type { MarcaLogoProps } from "@src/types/type";
 import Logo from "@public/logo-innova-medic.webp";
 import Title from "@src/components/utils/Title";

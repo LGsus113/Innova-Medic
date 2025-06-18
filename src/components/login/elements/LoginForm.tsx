@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@src/context/AuthContext";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";
-import Arroba from "@src/assets/@.svg";
-import Lock from "@src/assets/lock.svg";
+import Arroba from "@src/assets/svg/@.svg";
+import Lock from "@src/assets/svg/lock.svg";
 
 export default function LoginForm() {
   const navigate = useNavigate();

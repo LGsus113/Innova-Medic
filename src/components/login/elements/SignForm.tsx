@@ -4,17 +4,17 @@ import { useRegisterPaciente } from "@src/api/implements/register-p-hook";
 import { useAuthContext } from "@src/context/AuthContext";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";
-import Name from "@src/assets/name.svg?react";
-import LastName from "@src/assets/lastname.svg?react";
-import Phone from "@src/assets/phone.svg?react";
-import Calendar from "@src/assets/calendar.svg?react";
-import Size from "@src/assets/size.svg?react";
-import Address from "@src/assets/address.svg?react";
-import Blood from "@src/assets/blood.svg?react";
-import Left from "@src/assets/left.svg?react";
-import Right from "@src/assets/right.svg?react";
-import Arroba from "@src/assets/@.svg?react";
-import Lock from "@src/assets/clock.svg?react";
+import Name from "@src/assets/svg/name.svg?react";
+import LastName from "@src/assets/svg/lastname.svg?react";
+import Phone from "@src/assets/svg/phone.svg?react";
+import Calendar from "@src/assets/svg/calendar.svg?react";
+import Size from "@src/assets/svg/size.svg?react";
+import Address from "@src/assets/svg/address.svg?react";
+import Blood from "@src/assets/svg/blood.svg?react";
+import Left from "@src/assets/svg/left.svg?react";
+import Right from "@src/assets/svg/right.svg?react";
+import Arroba from "@src/assets/svg/@.svg?react";
+import Lock from "@src/assets/svg/clock.svg?react";
 
 export default function SignForm() {
   const [page, setPage] = useState(0);

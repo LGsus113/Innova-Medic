@@ -65,11 +65,20 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tipo?: 1 | 2;
 }
 
+export interface PerfilUsuario {
+  sexo: string;
+  telefono: string;
+  email: string;
+  especialidad?: string;
+  numeroColegiado?: string;
+}
+
 export interface UsuarioValidado {
   idUsuario: number;
   nombre: string;
   apellido: string;
   rol: string;
+  perfil?: PerfilUsuario;
 }
 
 export interface ApiOptions {
@@ -78,16 +87,30 @@ export interface ApiOptions {
   headers?: Record<string, string>;
 }
 
+export interface SessionData {
+  user: UsuarioValidado | null;
+  token: string;
+  perfil?: PerfilUsuario | null;
+}
+
 export interface AuthContextType {
   user: UsuarioValidado | null;
+  perfil: PerfilUsuario | null;
+  error: string | null;
+  loading: boolean;
   updateUser: (newUser: UsuarioValidado, token: string) => void;
   logout: () => void;
-  login: (email: string, password: string) => Promise<{ token: string; usuario: UsuarioValidado }>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ token: string; usuario: UsuarioValidado }>;
+  fetchPerfil: (forceUpdate?: boolean) => Promise<PerfilUsuario>;
+  refreshPerfil: () => Promise<PerfilUsuario>;
   isAuthenticated: boolean;
   userId: number;
   fullName: string | null;
   role: string | null;
-  loading: boolean;
+  clearError: () => void;
 }
 
 export interface Cita {

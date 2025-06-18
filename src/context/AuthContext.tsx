@@ -2,38 +2,67 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "@src/api/implements/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
-import type { UsuarioValidado, AuthContextType } from "@src/types/type";
+import type {
+  UsuarioValidado,
+  PerfilUsuario,
+  SessionData,
+  AuthContextType,
+} from "@src/types/type";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const DEFAULT_SESSION: SessionData = {
+  user: null,
+  token: "",
+  perfil: undefined,
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UsuarioValidado | null>(null);
+  const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { fetchData } = useApi();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("session");
-    if (stored) {
-      try {
-        const session = JSON.parse(stored);
-        setUser(session.user);
-      } catch {
-        localStorage.removeItem("session");
-      }
-    }
-    setLoading(false);
-  }, []);
+  const updateSession = (updates: Partial<SessionData>) => {
+    const currentSession = JSON.parse(
+      localStorage.getItem("session") || JSON.stringify(DEFAULT_SESSION)
+    );
+    const newSession: SessionData = { ...currentSession, ...updates };
 
-  const updateUser = (newUser: UsuarioValidado, token: string) => {
-    const session = { user: newUser, token };
-    setUser(newUser);
-    localStorage.setItem("session", JSON.stringify(session));
+    localStorage.setItem("session", JSON.stringify(newSession));
+
+    if (updates.user !== undefined) setUser(updates.user);
+    if (updates.perfil !== undefined) setPerfil(updates.perfil || null);
   };
 
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const stored = localStorage.getItem("session");
+      if (stored) {
+        try {
+          const session: SessionData = JSON.parse(stored);
+
+          if (!session.token || !session.user) {
+            throw new Error("Sesión inválida");
+          }
+
+          setUser(session.user);
+          setPerfil(session.perfil || null);
+        } catch (err) {
+          localStorage.removeItem("session");
+          setError("Error al cargar la sesión");
+        }
+      }
+      setLoading(false);
+    };
+
+    initializeAuth();
+  }, []);
+
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("session");
+    updateSession({ user: null, perfil: null, token: "" });
     navigate("/");
   };
 
@@ -41,32 +70,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string,
     password: string
   ): Promise<{ token: string; usuario: UsuarioValidado }> => {
-    const user = await fetchData(ENDPOINTS.USUARIO.VALIDATION(), {
-      method: "POST",
-      body: { email, contrasenia: password },
-    });
+    try {
+      setLoading(true);
+      const response = await fetchData(ENDPOINTS.USUARIO.VALIDATION(), {
+        method: "POST",
+        body: { email, contrasenia: password },
+      });
 
-    const { token, usuario } = user;
+      const { token, usuario } = response;
+      updateSession({ user: usuario, token });
 
-    updateUser(usuario, token);
-    return { token, usuario };
+      return { token, usuario };
+    } catch (error) {
+      setError("Error al iniciar sesión");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPerfil = async (forceUpdate = false): Promise<PerfilUsuario> => {
+    try {
+      if (!user?.idUsuario) throw new Error("Usuario no autenticado");
+
+      if (perfil && !forceUpdate) {
+        return perfil;
+      }
+
+      const response = await fetchData(
+        ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
+      );
+      updateSession({ perfil: response.user });
+
+      return response.user;
+    } catch (error) {
+      setError("Error al cargar el perfil");
+      throw error;
+    }
+  };
+
+  const refreshPerfil = async (): Promise<PerfilUsuario> => {
+    return fetchPerfil(true);
+  };
+
+  const updateUser = (newUser: UsuarioValidado, token: string) => {
+    updateSession({ user: newUser, token });
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        perfil,
+        error,
+        loading,
         updateUser,
         logout,
         login,
+        fetchPerfil,
+        refreshPerfil,
         isAuthenticated: !!user,
         userId: user?.idUsuario || 0,
-        fullName:
-          user?.nombre && user?.apellido
-            ? `${user.nombre} ${user.apellido}`
-            : null,
+        fullName: user ? `${user.nombre} ${user.apellido}` : null,
         role: user?.rol || null,
-        loading,
+        clearError: () => setError(null),
       }}
     >
       {children}

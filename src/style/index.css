@@ -308,7 +308,7 @@ h6 span {
   border-radius: 50%;
   color: white;
   background-color: var(--color-pink-600);
-  content: url(/src/assets/arrow-diagonal.svg);
+  content: url(/src/assets/svg/arrow-diagonal.svg);
   z-index: 20;
   top: -10px;
   left: -10px;
