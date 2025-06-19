@@ -71,9 +71,16 @@ export interface PerfilBase {
   email: string;
 }
 
+export interface DisponibilidadMedica {
+  diaSemana: string;
+  horaInicio: string;
+  horaFin: string;
+}
+
 export interface PerfilMedico extends PerfilBase {
   especialidad: string;
   numeroColegiado: string;
+  disponibilidad: DisponibilidadMedica[];
 }
 
 export interface PerfilPaciente extends PerfilBase {
@@ -219,4 +226,20 @@ export interface Paciente {
   talla: string;
   grupoSanguineo: string;
   direccion: string;
+}
+
+export interface DisponibilidadCardProps {
+  key: number;
+  diaSemana: string;
+  horaInicio: string;
+  horaFin: string;
+}
+
+export interface PTextProps {
+  title: string;
+  content: string;
+}
+
+export interface UserAvatarProps extends PTextProps {
+  sexo: string;
 }
