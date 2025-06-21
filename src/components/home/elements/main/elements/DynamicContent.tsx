@@ -11,7 +11,7 @@ import { useCitasList } from "@src/api/implements/cita-hook";
 
 export default function DynamicContent() {
   const [endpoint, setEndpoint] = useState<string | null>(null);
-  const { userId, role, accessToken } = useAuthContext();
+  const { userId, role } = useAuthContext();
   const { activeSection } = useSectionContext();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function DynamicContent() {
     }
   }, [userId, role]);
 
-  const { data, loading, error, refetch } = useCitasList(endpoint, accessToken);
+  const { data, loading, error, refetch } = useCitasList(endpoint);
 
   return (
     <>
@@ -36,7 +36,7 @@ export default function DynamicContent() {
             citas: "Citas Pendientes",
             agenda: "Agenda",
             recetas: "Recetas",
-            reservar: "Agendar Nueva Cita",
+            reservar: "Agendar Nueva Cita"
           }[activeSection]
         }
       </h1>

@@ -1,14 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiClient } from "@src/api/client";
+import { useApi } from "@src/api/implements/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
 import type {
   UsuarioValidado,
   PerfilUsuario,
   SessionData,
-  PerfilMedico,
-  PerfilPaciente,
-  ApiResponse,
   AuthContextType,
 } from "@src/types/type";
 
@@ -16,18 +13,17 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const DEFAULT_SESSION: SessionData = {
   user: null,
-  accessToken: "",
-  refreshToken: "",
+  token: "",
   perfil: undefined,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [accessToken, setAccessToken] = useState<string>("");
   const [user, setUser] = useState<UsuarioValidado | null>(null);
   const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { fetchData } = useApi();
 
   const updateSession = (updates: Partial<SessionData>) => {
     const currentSession = JSON.parse(
@@ -39,7 +35,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (updates.user !== undefined) setUser(updates.user);
     if (updates.perfil !== undefined) setPerfil(updates.perfil || null);
-    if (updates.accessToken !== undefined) setAccessToken(updates.accessToken);
   };
 
   useEffect(() => {
@@ -49,13 +44,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const session: SessionData = JSON.parse(stored);
 
-          if (!session.accessToken || !session.refreshToken || !session.user) {
+          if (!session.token || !session.user) {
             throw new Error("Sesión inválida");
           }
 
           setUser(session.user);
           setPerfil(session.perfil || null);
-          setAccessToken(session.accessToken);
         } catch (err) {
           localStorage.removeItem("session");
           setError("Error al cargar la sesión");
@@ -68,12 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = () => {
-    updateSession({
-      user: null,
-      perfil: null,
-      accessToken: "",
-      refreshToken: "",
-    });
+    updateSession({ user: null, perfil: null, token: "" });
     navigate("/");
   };
 
@@ -83,15 +72,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<{ token: string; usuario: UsuarioValidado }> => {
     try {
       setLoading(true);
-      const response = await apiClient(ENDPOINTS.USUARIO.VALIDATION(), {
+      const response = await fetchData(ENDPOINTS.USUARIO.VALIDATION(), {
         method: "POST",
         body: { email, contrasenia: password },
       });
 
-      const { accessToken, refreshToken, usuario } = response;
-      updateSession({ user: usuario, accessToken, refreshToken });
+      const { token, usuario } = response;
+      updateSession({ user: usuario, token });
 
-      return { token: accessToken, usuario };
+      return { token, usuario };
     } catch (error) {
       setError("Error al iniciar sesión");
       throw error;
@@ -108,28 +97,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return perfil;
       }
 
-      const response = await apiClient<ApiResponse<PerfilUsuario>>(
-        ENDPOINTS.USUARIO.PERFIL(user.idUsuario),
-        {
-          onTokenRefresh: (newToken: string) => {
-            if (user) updateSession({ accessToken: newToken });
-          },
-        }
+      const response = await fetchData(
+        ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
       );
-
-      if (user.rol === "Medico") {
-        const perfilMedico = response.user as PerfilMedico;
-        if (!perfilMedico.especialidad || !perfilMedico.numeroColegiado) {
-          throw new Error("Perfil de médico incompleto");
-        }
-      } else if (user.rol === "Paciente") {
-        const perfilPaciente = response.user as PerfilPaciente;
-        if (!perfilPaciente.fechaNacimiento || !perfilPaciente.talla) {
-          throw new Error("Perfil de paciente incompleto");
-        }
-      }
-
       updateSession({ perfil: response.user });
+
       return response.user;
     } catch (error) {
       setError("Error al cargar el perfil");
@@ -142,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateUser = (newUser: UsuarioValidado, token: string) => {
-    updateSession({ user: newUser, accessToken: token });
+    updateSession({ user: newUser, token });
   };
 
   return (
@@ -161,7 +133,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userId: user?.idUsuario || 0,
         fullName: user ? `${user.nombre} ${user.apellido}` : null,
         role: user?.rol || null,
-        accessToken,
         clearError: () => setError(null),
       }}
     >

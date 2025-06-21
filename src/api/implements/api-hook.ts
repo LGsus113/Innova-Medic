@@ -1,23 +1,10 @@
 import { apiClient } from "@src/api/client";
 import type { ApiOptions } from "@src/types/type";
-import { useAuthContext } from "@src/context/AuthContext";
 
 export function useApi() {
-  const { user, updateUser, logout } = useAuthContext();
-
-  const fetchData = async <T = any>(
-    endpoint: string,
-    options: ApiOptions = {}
-  ): Promise<T> => {
+  const fetchData = async (endpoint: string, options: ApiOptions = {}) => {
     try {
-      const data = await apiClient(endpoint, {
-        ...options,
-        onTokenRefresh: (newToken: string) => {
-          if (user) {
-            updateUser(user, newToken);
-          }
-        },
-      });
+      const data = await apiClient(endpoint, options);
 
       if (data?.ok === false) {
         const message = data?.message || "Ocurrió un error inesperado.";
@@ -34,9 +21,6 @@ export function useApi() {
             "No se pudo conectar con el servidor. Verifica tu conexión.";
         } else if (err.message.includes("timeout")) {
           message = "La solicitud tardó demasiado. Inténtalo de nuevo.";
-        } else if (err.message.includes("expirada")) {
-          logout();
-          message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
         } else {
           message = err.message;
         }

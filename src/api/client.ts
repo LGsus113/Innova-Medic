@@ -1,77 +1,39 @@
-import type { apiClientProps } from "@src/types/type";
-
 const BASE_URL = "http://localhost:8080";
 
-export async function apiClient<T = any>(
+export async function apiClient(
   endpoint: string,
   {
     method = "GET",
     body,
     headers = {},
-    retry = true,
-    onTokenRefresh,
-  }: apiClientProps = {}
-): Promise<T> {
+  }: { method?: string; body?: any; headers?: Record<string, string> } = {}
+) {
   const url = `${BASE_URL}${endpoint}`;
 
-  const sessionStr = localStorage.getItem("session");
-  let session: any = sessionStr ? JSON.parse(sessionStr) : null;
+  const session = localStorage.getItem("session");
+  let token: string | null = null;
 
-  const accessToken = session?.accessToken || null;
+  if (session) {
+    try {
+      const parsed = JSON.parse(session);
+      token = parsed?.token;
+    } catch (e) {
+      console.log("Error parsing session from ls", e);
+    }
+  }
 
   const config: RequestInit = {
     method,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
   };
 
-  console.log("Usando access token:", accessToken);
   const response = await fetch(url, config);
-
-  if (response.status === 401 && session?.refreshToken && retry) {
-    try {
-      console.log("Token expirado. Intentando refresh con refreshtoken", session?.refreshToken);
-      const refreshResp = await fetch(`${BASE_URL}/api/usuario/refresh-token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken: session.refreshToken }),
-      });
-
-      if (!refreshResp.ok) {
-        throw new Error("Refresh token inválido");
-      }
-
-      const { accessToken: nuevoToken } = await refreshResp.json();
-
-      const nuevaSesion = {
-        ...session,
-        accessToken: nuevoToken,
-      };
-      localStorage.setItem("session", JSON.stringify(nuevaSesion));
-
-      if (onTokenRefresh) {
-        console.log("token actualizado", nuevoToken);
-        onTokenRefresh(nuevoToken);
-      }
-
-      console.log("Reintentando request original con nuevo token...");
-      return await apiClient(endpoint, {
-        method,
-        body,
-        headers,
-        retry: false,
-        onTokenRefresh,
-      });
-    } catch (err) {
-      localStorage.removeItem("session");
-      throw new Error("Sesión expirada. Por favor, inicia sesión nuevamente.");
-    }
-  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);

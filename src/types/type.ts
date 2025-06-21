@@ -96,13 +96,8 @@ export interface UsuarioValidado {
   idUsuario: number;
   nombre: string;
   apellido: string;
-  rol: "Medico" | "Paciente";
+  rol: string;
   perfil?: PerfilUsuario;
-}
-
-export interface ApiResponse<T> {
-  status: string;
-  user: T;
 }
 
 export interface ApiOptions {
@@ -113,8 +108,7 @@ export interface ApiOptions {
 
 export interface SessionData {
   user: UsuarioValidado | null;
-  accessToken: string;
-  refreshToken: string;
+  token: string;
   perfil?: PerfilUsuario | null;
 }
 
@@ -135,7 +129,6 @@ export interface AuthContextType {
   userId: number;
   fullName: string | null;
   role: string | null;
-  accessToken: string;
   clearError: () => void;
 }
 
@@ -250,5 +243,4 @@ export interface apiClientProps {
   body?: any;
   headers?: Record<string, string>;
   retry?: boolean;
-  onTokenRefresh?: (newAccesToken: string) => void;
 }
