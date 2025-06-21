@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiClient } from "@src/api/client"; // ✅ usar directamente apiClient
+import { apiClient } from "@src/api/client";
 import { ENDPOINTS } from "@src/api/endpoints";
 import type {
   UsuarioValidado,
