@@ -113,7 +113,8 @@ export interface ApiOptions {
 
 export interface SessionData {
   user: UsuarioValidado | null;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   perfil?: PerfilUsuario | null;
 }
 
@@ -134,6 +135,7 @@ export interface AuthContextType {
   userId: number;
   fullName: string | null;
   role: string | null;
+  accessToken: string;
   clearError: () => void;
 }
 
@@ -242,4 +244,12 @@ export interface PTextProps {
 
 export interface UserAvatarProps extends PTextProps {
   sexo: string;
+}
+
+export interface apiClientProps {
+  method?: string;
+  body?: any;
+  headers?: Record<string, string>;
+  retry?: boolean;
+  onTokenRefresh?: (newAccesToken: string) => void;
 }

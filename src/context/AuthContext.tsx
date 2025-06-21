@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "@src/api/implements/api-hook";
+import { apiClient } from "@src/api/client"; // ✅ usar directamente apiClient
 import { ENDPOINTS } from "@src/api/endpoints";
 import type {
   UsuarioValidado,
@@ -16,17 +16,18 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const DEFAULT_SESSION: SessionData = {
   user: null,
-  token: "",
+  accessToken: "",
+  refreshToken: "",
   perfil: undefined,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [accessToken, setAccessToken] = useState<string>("");
   const [user, setUser] = useState<UsuarioValidado | null>(null);
   const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { fetchData } = useApi();
 
   const updateSession = (updates: Partial<SessionData>) => {
     const currentSession = JSON.parse(
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (updates.user !== undefined) setUser(updates.user);
     if (updates.perfil !== undefined) setPerfil(updates.perfil || null);
+    if (updates.accessToken !== undefined) setAccessToken(updates.accessToken);
   };
 
   useEffect(() => {
@@ -47,12 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const session: SessionData = JSON.parse(stored);
 
-          if (!session.token || !session.user) {
+          if (!session.accessToken || !session.refreshToken || !session.user) {
             throw new Error("Sesión inválida");
           }
 
           setUser(session.user);
           setPerfil(session.perfil || null);
+          setAccessToken(session.accessToken);
         } catch (err) {
           localStorage.removeItem("session");
           setError("Error al cargar la sesión");
@@ -65,7 +68,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = () => {
-    updateSession({ user: null, perfil: null, token: "" });
+    updateSession({
+      user: null,
+      perfil: null,
+      accessToken: "",
+      refreshToken: "",
+    });
     navigate("/");
   };
 
@@ -75,15 +83,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<{ token: string; usuario: UsuarioValidado }> => {
     try {
       setLoading(true);
-      const response = await fetchData(ENDPOINTS.USUARIO.VALIDATION(), {
+      const response = await apiClient(ENDPOINTS.USUARIO.VALIDATION(), {
         method: "POST",
         body: { email, contrasenia: password },
       });
 
-      const { token, usuario } = response;
-      updateSession({ user: usuario, token });
+      const { accessToken, refreshToken, usuario } = response;
+      updateSession({ user: usuario, accessToken, refreshToken });
 
-      return { token, usuario };
+      return { token: accessToken, usuario };
     } catch (error) {
       setError("Error al iniciar sesión");
       throw error;
@@ -100,8 +108,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return perfil;
       }
 
-      const response = await fetchData<ApiResponse<PerfilUsuario>>(
-        ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
+      const response = await apiClient<ApiResponse<PerfilUsuario>>(
+        ENDPOINTS.USUARIO.PERFIL(user.idUsuario),
+        {
+          onTokenRefresh: (newToken: string) => {
+            if (user) updateSession({ accessToken: newToken });
+          },
+        }
       );
 
       if (user.rol === "Medico") {
@@ -129,7 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateUser = (newUser: UsuarioValidado, token: string) => {
-    updateSession({ user: newUser, token });
+    updateSession({ user: newUser, accessToken: token });
   };
 
   return (
@@ -148,6 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userId: user?.idUsuario || 0,
         fullName: user ? `${user.nombre} ${user.apellido}` : null,
         role: user?.rol || null,
+        accessToken,
         clearError: () => setError(null),
       }}
     >
