@@ -30,10 +30,12 @@ export async function apiClient<T = any>(
     body: body ? JSON.stringify(body) : undefined,
   };
 
+  console.log("Usando access token:", accessToken);
   const response = await fetch(url, config);
 
   if (response.status === 401 && session?.refreshToken && retry) {
     try {
+      console.log("Token expirado. Intentando refresh con refreshtoken", session?.refreshToken);
       const refreshResp = await fetch(`${BASE_URL}/api/usuario/refresh-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,9 +55,11 @@ export async function apiClient<T = any>(
       localStorage.setItem("session", JSON.stringify(nuevaSesion));
 
       if (onTokenRefresh) {
+        console.log("token actualizado", nuevoToken);
         onTokenRefresh(nuevoToken);
       }
 
+      console.log("Reintentando request original con nuevo token...");
       return await apiClient(endpoint, {
         method,
         body,

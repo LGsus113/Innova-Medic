@@ -80,9 +80,9 @@ export default function SectionPerfil() {
         <article className="grow h-full flex flex-col gap-5 items-center justify-center font-signika card-front customer-bg-2 p-5 rounded-4xl">
           <h2 className="text-white text-4xl font-bold">Horario:</h2>
           <div className="w-full flex flex-col gap-2 flex-wrap">
-            {medicoFields.disponibilidad.map((d, idx) => (
+            {medicoFields.disponibilidad.map((d, key) => (
               <CardHorario
-                key={idx}
+                key={key}
                 diaSemana={d.diaSemana}
                 horaInicio={d.horaInicio}
                 horaFin={d.horaFin}

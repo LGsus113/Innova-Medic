@@ -231,7 +231,6 @@ export interface Paciente {
 }
 
 export interface DisponibilidadCardProps {
-  key: number;
   diaSemana: string;
   horaInicio: string;
   horaFin: string;
