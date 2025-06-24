@@ -97,6 +97,8 @@ export default function DialogContent({
               />
               <ul className="list-disc pl-6">
                 {recetaDTO.medicamentos.map((medicamento) => {
+                  const contentMedicamento = `${medicamento.nombre} ${medicamento.dosis} ${medicamento.frecuencia}`;
+
                   return (
                     <li
                       className="list-none text-teal-200 text-xl"
@@ -106,7 +108,7 @@ export default function DialogContent({
                         <strong className="font-signika not-italic text-white text-lg mr-1">
                           -
                         </strong>
-                        {medicamento.medicamento}
+                        {contentMedicamento}
                       </p>
                     </li>
                   );

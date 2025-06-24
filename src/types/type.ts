@@ -144,23 +144,24 @@ export interface Cita {
     idUsuario: number;
     nombre: string;
     apellido: string;
-    grupoSanguineo?: string; // Opcional por si no siempre viene
+    grupoSanguineo?: string;
   };
   fecha: string;
   hora: string;
-  tratamiento: string; // Antes era "title"
-  notasMedicas: string; // Antes era "notas"
+  tratamiento: string;
+  notasMedicas: string;
   diagnostico: string;
   estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
   recetaDTO?: {
-    // Opcional por si no todas las citas tienen receta
     idReceta: number;
     instruccionesAdicionales: string;
     firmaMedico: string;
     fecha: string;
     medicamentos: Array<{
       idMedicamento: number;
-      medicamento: string;
+      nombre: string;
+      dosis: string;
+      frecuencia: string;
     }>;
   };
 }
