@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "@src/api/implements/api-hook";
+import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
 import type {
   UsuarioValidado,

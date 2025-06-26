@@ -1,8 +1,9 @@
+import { useCallback } from "react";
 import { apiClient } from "@src/api/client";
 import type { ApiOptions } from "@src/types/type";
 
 export function useApi() {
-  const fetchData = async (endpoint: string, options: ApiOptions = {}) => {
+  const fetchData = useCallback(async (endpoint: string, options: ApiOptions = {}) => {
     try {
       const data = await apiClient(endpoint, options);
 
@@ -28,7 +29,7 @@ export function useApi() {
 
       throw new Error(message);
     }
-  };
+  }, []);
 
   return { fetchData };
 }

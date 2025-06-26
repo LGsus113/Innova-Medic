@@ -1,6 +1,7 @@
 import Agenda from "@src/components/home/elements/main/elements/complementos/Agenda";
 import Cita from "@src/components/home/elements/main/elements/complementos/Cita";
 import Recetas from "@src/components/home/elements/main/elements/complementos/Receta";
+import Reservas from "@src/components/home/elements/main/elements/complementos/Reservas";
 import LoadingComponent from "@src/components/utils/LoadingComponent";
 import ErrorComponent from "@src/components/utils/ErrorComponent";
 import { useAuthContext } from "@src/context/AuthContext";
@@ -18,9 +19,9 @@ export default function DynamicContent() {
     if (!userId || !role) return;
 
     if (role === "Medico") {
-      setEndpoint(ENDPOINTS.USUARIO.LIST_CITA_MEDICO(userId));
+      setEndpoint(ENDPOINTS.MEDICO.LIST_CITA_MEDICO(userId));
     } else if (role === "Paciente") {
-      setEndpoint(ENDPOINTS.USUARIO.LIST_CITA_PACIENTE(userId));
+      setEndpoint(ENDPOINTS.PACIENTE.LIST_CITA_PACIENTE(userId));
     } else {
       setEndpoint(null);
     }
@@ -36,7 +37,7 @@ export default function DynamicContent() {
             citas: "Citas Pendientes",
             agenda: "Agenda",
             recetas: "Recetas",
-            reservar: "Agendar Nueva Cita"
+            reservar: "Agendar Nueva Cita",
           }[activeSection]
         }
       </h1>
@@ -53,7 +54,7 @@ export default function DynamicContent() {
 
       {activeSection === "recetas" && <Recetas />}
 
-      {activeSection === "reservar" && <p>Hola reservas...</p>}
+      {activeSection === "reservar" && <Reservas />}
     </>
   );
 }

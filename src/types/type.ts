@@ -245,3 +245,34 @@ export interface apiClientProps {
   headers?: Record<string, string>;
   retry?: boolean;
 }
+
+export interface MedicoPoEspecialidadProps {
+  idUsuario: number;
+  nombre: string;
+  apellido: string;
+}
+
+export interface ComboEspecialidadesProps {
+  especialidades: string[];
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export interface ComboMedicosPorEspecialidadProps {
+  medicos: MedicoPoEspecialidadProps[];
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}
+
+export interface SlotTime {
+  horaInicio: string;
+  horaFin: string;
+  disponible: boolean;
+}
+
+export interface SlotPorDia {
+  fecha: string;
+  diaSemana: string;
+  slots: SlotTime[];
+}
