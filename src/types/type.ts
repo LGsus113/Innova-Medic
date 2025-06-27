@@ -276,3 +276,41 @@ export interface SlotPorDia {
   diaSemana: string;
   slots: SlotTime[];
 }
+
+export interface HorarioDisponibilidadProps {
+  slots: SlotPorDia[];
+  onClickSlot?: (slot: { fecha: string; horaInicio: string }) => void;
+}
+
+export interface RangoFechasProps {
+  fechaInicio: string;
+  fechaFin: string;
+  onBack: () => void;
+  onNext: () => void;
+  disabled: boolean;
+  puedeRetroceder: boolean;
+  puedeAvanzar: boolean;
+  estado: "normal" | "cargando" | "error" | "no-medico";
+}
+
+export interface DialogConfirmarCitaProps {
+  slot: { fecha: string; horaInicio: string } | null;
+  tratamiento: string;
+  setTratamiento: (value: string) => void;
+  onConfirmar: () => void;
+  loading: boolean;
+  error: String | null;
+}
+
+export interface DialogConfirmarCitaRef {
+  open: () => void;
+  close: () => void;
+}
+
+export interface CitaRecetaVaciaDTOProps {
+  idMedico: number;
+  idPaciente: number;
+  fecha: string;
+  hora: string;
+  tratamiento: string;
+}

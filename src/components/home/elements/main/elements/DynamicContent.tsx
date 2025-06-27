@@ -54,7 +54,7 @@ export default function DynamicContent() {
 
       {activeSection === "recetas" && <Recetas />}
 
-      {activeSection === "reservar" && <Reservas />}
+      {activeSection === "reservar" && <Reservas onCitaRegistrada={refetch} />}
     </>
   );
 }

@@ -21,9 +21,7 @@ export function useDisponibilidad(
       const result = await fetchData(
         ENDPOINTS.PACIENTE.DISPONIBILIDAD(idMedico, fechaInicio, fechaFin)
       );
-      console.log(
-        ENDPOINTS.PACIENTE.DISPONIBILIDAD(idMedico, fechaInicio, fechaFin)
-      );
+      
       if (Array.isArray(result)) {
         setData(result);
       } else if (typeof result === "object" && result.message) {

@@ -18,5 +18,6 @@ export const ENDPOINTS = {
   },
   REGISTRO: {
     PACIENTE: () => "/api/pacientes/registrar",
+    CITA: () => "/api/cita/registrar"
   },
 };
