@@ -2,6 +2,7 @@ export const ENDPOINTS = {
   USUARIO: {
     VALIDATION: () => "/login",
     PERFIL: (id: number) => `/api/usuario/${id}/perfil`,
+    RECETA_PDF: (id: number) => `/api/cita/${id}/receta-pdf`,
   },
   PACIENTE: {
     LIST_CITA_PACIENTE: (id: number) => `/api/pacientes/cita/${id}`,
@@ -18,6 +19,6 @@ export const ENDPOINTS = {
   },
   REGISTRO: {
     PACIENTE: () => "/api/pacientes/registrar",
-    CITA: () => "/api/cita/registrar"
+    CITA: () => "/api/cita/registrar",
   },
 };

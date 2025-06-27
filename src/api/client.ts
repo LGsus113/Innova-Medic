@@ -6,7 +6,13 @@ export async function apiClient(
     method = "GET",
     body,
     headers = {},
-  }: { method?: string; body?: any; headers?: Record<string, string> } = {}
+    responseType = "json",
+  }: {
+    method?: string;
+    body?: any;
+    headers?: Record<string, string>;
+    responseType?: "json" | "blob";
+  } = {}
 ) {
   const url = `${BASE_URL}${endpoint}`;
 
@@ -25,8 +31,10 @@ export async function apiClient(
   const config: RequestInit = {
     method,
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      ...(responseType !== "blob" && {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
@@ -40,5 +48,5 @@ export async function apiClient(
     throw new Error(error?.message || "Api error");
   }
 
-  return response.json();
+  return responseType === "blob" ? response.blob() : response.json();
 }

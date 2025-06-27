@@ -1,10 +1,21 @@
 import { useRef, useState, useEffect } from "react";
+import { useAuthContext } from "@src/context/AuthContext";
+import { useDescargarRecetaPDF } from "@src/api/api-T/descargar-receta-pdf";
 import type { Cita, CitaModalProps } from "@src/types/type";
 import DialogContent from "@src/components/home/elements/main/elements/complementos/modal/Dialog-Content";
 
 export default function Cita({ citas }: CitaModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
+  const { role } = useAuthContext();
+
+  const { descargarPDF, loading, error } = useDescargarRecetaPDF();
+
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
 
   useEffect(() => {
     if (citaSeleccionada && dialogRef.current) {
@@ -33,7 +44,9 @@ export default function Cita({ citas }: CitaModalProps) {
       <div className="w-full h-full flex flex-col gap-2 overflow-y-auto scroll-clean">
         {citas.length === 0 ? (
           <div className="size-full flex justify-center items-center text-white/60">
-            <h1 className="text-xl">No hay citas registradas por el momento.</h1>
+            <h1 className="text-xl">
+              No hay citas registradas por el momento.
+            </h1>
           </div>
         ) : (
           citas.map((cita, i) => {
@@ -84,21 +97,38 @@ export default function Cita({ citas }: CitaModalProps) {
               <DialogContent citaSeleccionada={citaSeleccionada} />
             </div>
             <div className="flex items-center justify-end gap-5">
-              <button className="bg-green-500 shadow-inner shadow-white/50 button-citas">
-                Editar Cita
+              {role === "Medico" && (
+                <>
+                  <button
+                    className={`bg-teal-600 shadow-inner shadow-white/50 button-citas ${
+                      citaSeleccionada.estado === "Finalizada"
+                        ? "opacity-50 cursor-not-allowed hover:brightness-95"
+                        : ""
+                    }`}
+                    disabled={citaSeleccionada.estado === "Finalizada"}
+                  >
+                    Atender
+                  </button>
+                  <button className="bg-green-500 shadow-inner shadow-white/50 button-citas">
+                    Editar Cita
+                  </button>
+                </>
+              )}
+              <button
+                className={`bg-emerald-500 shadow-inner shadow-white/50 button-citas ${
+                  loading ? "opacity-50 cursor-wait" : ""
+                }`}
+                onClick={() => {
+                  if (citaSeleccionada.idCitas) {
+                    descargarPDF(citaSeleccionada.idCitas);
+                  }
+                }}
+                disabled={loading}
+              >
+                {loading ? "Descargando..." : "Descargar Receta"}
               </button>
               <button className="bg-red-400 shadow-inner shadow-white/50 button-citas">
                 Cancelar Cita
-              </button>
-              <button
-                className={`bg-teal-600 shadow-inner shadow-white/50 button-citas ${
-                  citaSeleccionada.estado === "Finalizada"
-                    ? "opacity-50 cursor-not-allowed hover:brightness-95"
-                    : ""
-                }`}
-                disabled={citaSeleccionada.estado === "Finalizada"}
-              >
-                Atender
               </button>
             </div>
           </div>
