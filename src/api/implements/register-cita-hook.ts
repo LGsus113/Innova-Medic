@@ -19,9 +19,10 @@ export function useRegistrarCita() {
         body: cita,
       });
 
-      if (result?.status === "success" && result.data?.idCita) {
-        setData(result.data);
-        return result.data;
+      if (result?.status === "success" && result.idCita) {
+        const citaData = { idCita: result.idCita };
+        setData(citaData);
+        return citaData;
       } else {
         const msg = result?.message || "No se pudo registrar la cita.";
         setError(msg);

@@ -16,6 +16,9 @@ export const ENDPOINTS = {
   },
   MEDICO: {
     LIST_CITA_MEDICO: (id: number) => `/api/medicos/cita/${id}`,
+    ESTADO_CITA: (id: number, estado: string) =>
+      `/api/cita/actualizar/${id}/estado?estado=${estado}`,
+    FINALIZAR_CITA: () => "/api/cita/finalizar/informacion",
   },
   REGISTRO: {
     PACIENTE: () => "/api/pacientes/registrar",

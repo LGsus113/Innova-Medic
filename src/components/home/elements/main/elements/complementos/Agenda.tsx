@@ -67,7 +67,7 @@ export default function Agenda({ citas = [] }: CitaModalProps) {
   };
 
   return (
-    <div className="calendar-container p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] text-center size-full flex flex-col gap-3 font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)] relative">
+    <div className="calendar-container p-4 bg-util text-center size-full flex flex-col gap-3 font-signika relative">
       <div className="w-full h-auto flex justify-between items-center">
         <BotonMes onCLick={retrocederMes}>Anterior</BotonMes>
 

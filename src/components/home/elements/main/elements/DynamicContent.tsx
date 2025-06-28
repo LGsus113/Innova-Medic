@@ -46,13 +46,15 @@ export default function DynamicContent() {
         <>
           {loading && <LoadingComponent />}
           {error && <ErrorComponent error={error} onRetry={refetch} />}
-          {!loading && !error && <Cita citas={data} />}
+          {!loading && !error && (
+            <Cita citas={data} onCitaRegistrada={refetch} />
+          )}
         </>
       )}
 
       {activeSection === "agenda" && <Agenda citas={data} />}
 
-      {activeSection === "recetas" && <Recetas />}
+      {activeSection === "recetas" && <Recetas onCitaRegistrada={refetch} />}
 
       {activeSection === "reservar" && <Reservas onCitaRegistrada={refetch} />}
     </>

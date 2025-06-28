@@ -58,6 +58,8 @@ export interface TextAreaField {
   placeholder?: string;
   id?: string;
   children?: React.ReactNode;
+  value: string;
+  onInput: (value: string) => void;
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -313,4 +315,28 @@ export interface CitaRecetaVaciaDTOProps {
   fecha: string;
   hora: string;
   tratamiento: string;
+}
+
+export interface CitaRecetaProps {
+  idCitas: number;
+  tratamiento: string;
+}
+
+interface MedicamentoRecetaRequestDTO {
+  nombre: string;
+  dosis: string;
+  frecuencia: string;
+}
+
+interface ActionCitaMedicoDTO {
+  notasMedicas: string;
+  diagnostico: string;
+  instruccionesAdicionales: string;
+  medicamentos: MedicamentoRecetaRequestDTO[];
+}
+
+export interface FinalizarCitaBody {
+  id: number;
+  actionCitaMedicoDTO: ActionCitaMedicoDTO;
+  nombreMedico: string;
 }

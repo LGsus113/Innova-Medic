@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from "react";
-import type { KeyboardEvent, FormEvent } from "react";
+import { useRef, useEffect, type KeyboardEvent } from "react";
 import type { TextAreaField } from "@src/types/type";
 
 export default function TextAreaField({
   placeholder,
   id,
   children,
+  value,
+  onInput,
 }: TextAreaField) {
-  const [value, setValue] = useState("");
   const isFirstFocus = useRef(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -20,9 +20,15 @@ export default function TextAreaField({
     }
   }, [value]);
 
+  const capitalizeFirst = (line: string) => {
+    const trimmed = line.trimStart().replace(/^- /, "");
+    if (trimmed.length === 0) return "- ";
+    return `- ${trimmed.charAt(0).toUpperCase()}${trimmed.slice(1)}`;
+  };
+
   const handleFocus = () => {
     if (isFirstFocus.current && value.trim() === "") {
-      setValue("- ");
+      onInput("- ");
       isFirstFocus.current = false;
     }
   };
@@ -33,13 +39,11 @@ export default function TextAreaField({
       .filter((line) => line.replace(/^-\s/, "").trim() !== "");
 
     if (meaningfulLines.length === 0) {
-      setValue("");
+      onInput("");
       isFirstFocus.current = true;
     } else {
-      const cleanedValue = meaningfulLines
-        .map((line) => (line.startsWith("- ") ? line : `- ${line}`))
-        .join("\n");
-      setValue(cleanedValue);
+      const cleanedValue = meaningfulLines.map(capitalizeFirst).join("\n");
+      onInput(cleanedValue);
     }
   };
 
@@ -57,37 +61,17 @@ export default function TextAreaField({
 
     if (e.key === "Enter") {
       e.preventDefault();
-
       const before = currentValue.slice(0, selectionStart);
       const after = currentValue.slice(selectionEnd);
 
-      setValue(`${before}\n- ${after}`);
+      const nextLine = "- ";
+      const newValue = `${before}\n${nextLine}${after}`;
+      onInput(newValue);
 
       requestAnimationFrame(() => {
-        const newPos = selectionStart + 3;
+        const newPos = selectionStart + nextLine.length + 1;
         textarea.setSelectionRange(newPos, newPos);
       });
-    }
-  };
-
-  const handleInput = (e: FormEvent<HTMLTextAreaElement>) => {
-    const target = e.target as HTMLTextAreaElement;
-    let inputValue = target.value;
-
-    inputValue = inputValue
-      .split("\n")
-      .map((line) => {
-        if (line.trim() === "") return "- ";
-        return line.startsWith("- ") ? line : `- ${line}`;
-      })
-      .join("\n");
-
-    if (inputValue.startsWith("-")) {
-      setValue(inputValue);
-    } else if (inputValue === "") {
-      setValue("- ");
-    } else {
-      setValue(`- ${inputValue}`);
     }
   };
 
@@ -104,7 +88,8 @@ export default function TextAreaField({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        onInput={handleInput}
+        onInput={(e) => onInput(e.currentTarget.value)}
+        ref={textareaRef}
       ></textarea>
     </div>
   );

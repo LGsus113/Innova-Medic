@@ -110,7 +110,7 @@ export default function Reservas({
 
   return (
     <>
-      <div className="size-full p-4 rounded-xl bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] font-signika shadow-[inset_0_0_8px_2px_rgba(0,0,0,0.75)] text-white flex flex-col gap-3">
+      <div className="size-full p-4 rounded-xl bg-util font-signika text-white flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="w-auto h-auto flex gap-5 items-center justify-center">
             <div className="w-[260px] flex flex-col gap-1">

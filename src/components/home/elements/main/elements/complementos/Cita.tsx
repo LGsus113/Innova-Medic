@@ -1,15 +1,26 @@
 import { useRef, useState, useEffect } from "react";
 import { useAuthContext } from "@src/context/AuthContext";
+import { useSectionContext } from "@src/context/SectionContext";
 import { useDescargarRecetaPDF } from "@src/api/api-T/descargar-receta-pdf";
+import { useActualizarEstadoCita } from "@src/api/implements/estado-cita-hook";
 import type { Cita, CitaModalProps } from "@src/types/type";
+import type { CitaRecetaProps } from "@src/types/type";
 import DialogContent from "@src/components/home/elements/main/elements/complementos/modal/Dialog-Content";
 
-export default function Cita({ citas }: CitaModalProps) {
+export default function Cita({
+  citas,
+  onCitaRegistrada,
+}: CitaModalProps & { onCitaRegistrada?: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
   const { role } = useAuthContext();
-
+  const { setActiveSection, setCitaActual } = useSectionContext();
   const { descargarPDF, loading, error } = useDescargarRecetaPDF();
+  const {
+    actualizarEstado,
+    isLoading: loadingEstado,
+    error: errorEstado,
+  } = useActualizarEstadoCita();
 
   useEffect(() => {
     if (error) {
@@ -37,6 +48,60 @@ export default function Cita({ citas }: CitaModalProps) {
 
   const closeModal = () => {
     setCitaSeleccionada(null);
+  };
+
+  const handleAtender = async (cita: CitaRecetaProps | null) => {
+    if (!cita) return;
+
+    if (citaSeleccionada?.estado !== "Confirmada") {
+      const success = await actualizarEstado(cita.idCitas, "Confirmada");
+      if (!success) {
+        alert(errorEstado || "No se pudo confirmar la cita.");
+        return;
+      }
+
+      setCitaSeleccionada((prev) =>
+        prev ? { ...prev, estado: "Confirmada" } : null
+      );
+    }
+
+    setCitaActual({ idCitas: cita.idCitas, tratamiento: cita.tratamiento });
+    setActiveSection("recetas");
+    dialogRef.current?.close();
+    onCitaRegistrada?.();
+  };
+
+  const handleCancelar = async () => {
+    if (!citaSeleccionada) return;
+
+    const success = await actualizarEstado(
+      citaSeleccionada.idCitas,
+      "Cancelada"
+    );
+
+    if (!success) {
+      alert(errorEstado || "No se pudo cancelar la cita.");
+      return;
+    }
+
+    alert("Cita cancelada correctamente.");
+    dialogRef.current?.close();
+    onCitaRegistrada?.();
+  };
+
+  useEffect(() => {
+    if (errorEstado) {
+      alert(errorEstado);
+    }
+  }, [errorEstado]);
+
+  const puedeAtender = () => {
+    if (!citaSeleccionada) return false;
+    return (
+      citaSeleccionada.estado !== "Finalizada" &&
+      citaSeleccionada.estado !== "Cancelada" &&
+      !loadingEstado
+    );
   };
 
   return (
@@ -78,8 +143,8 @@ export default function Cita({ citas }: CitaModalProps) {
 
       <dialog
         ref={dialogRef}
-        className="w-1/2 h-[calc(60vh+6px)] border-none outline-none rounded-xl p-8 backdrop:bg-black/0 fixed mx-auto z-40 bg-dark dialog-info-medic bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px]"
-        onClose={() => closeModal()}
+        className="w-1/2 h-[calc(60vh+6px)] border-none outline-none rounded-xl p-8 backdrop:bg-black/0 fixed mx-auto z-40 bg-util dialog-info-medic"
+        onClose={closeModal}
       >
         {citaSeleccionada && (
           <div className="flex flex-col gap-5 h-full">
@@ -100,14 +165,20 @@ export default function Cita({ citas }: CitaModalProps) {
               {role === "Medico" && (
                 <>
                   <button
+                    onClick={() =>
+                      handleAtender({
+                        idCitas: citaSeleccionada.idCitas,
+                        tratamiento: citaSeleccionada.tratamiento,
+                      })
+                    }
                     className={`bg-teal-600 shadow-inner shadow-white/50 button-citas ${
-                      citaSeleccionada.estado === "Finalizada"
+                      !puedeAtender()
                         ? "opacity-50 cursor-not-allowed hover:brightness-95"
                         : ""
                     }`}
-                    disabled={citaSeleccionada.estado === "Finalizada"}
+                    disabled={!puedeAtender()}
                   >
-                    Atender
+                    {loadingEstado ? "Confirmando..." : "Atender"}
                   </button>
                   <button className="bg-green-500 shadow-inner shadow-white/50 button-citas">
                     Editar Cita
@@ -127,8 +198,16 @@ export default function Cita({ citas }: CitaModalProps) {
               >
                 {loading ? "Descargando..." : "Descargar Receta"}
               </button>
-              <button className="bg-red-400 shadow-inner shadow-white/50 button-citas">
-                Cancelar Cita
+              <button
+                onClick={handleCancelar}
+                className={`bg-red-400 shadow-inner shadow-white/50 button-citas ${
+                  loadingEstado ? "opacity-50 cursor-wait" : ""
+                }`}
+                disabled={
+                  loadingEstado || citaSeleccionada.estado === "Finalizada"
+                }
+              >
+                {loadingEstado ? "Cancelando..." : "Cancelar Cita"}
               </button>
             </div>
           </div>

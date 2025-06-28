@@ -3,7 +3,7 @@ import { useSectionContext } from "@src/context/SectionContext";
 
 export default function Secciones() {
   const { role } = useAuthContext();
-  const { activeSection, setActiveSection } = useSectionContext();
+  const { activeSection, setActiveSection, citaActual } = useSectionContext();
 
   const HEADERS =
     role === "Medico"
@@ -28,8 +28,18 @@ export default function Secciones() {
               activeSection === item.key
                 ? "brightness-115"
                 : "brightness-85 group-hover:brightness-90"
+            } ${
+              item.key === "recetas" && !citaActual
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
-            onClick={() => setActiveSection(item.key)}
+            onClick={() => {
+              if (item.key === "recetas" && !citaActual) {
+                alert("Primero debes seleccionar una cita para atender.");
+                return;
+              }
+              setActiveSection(item.key);
+            }}
           >
             {item.label}
           </button>

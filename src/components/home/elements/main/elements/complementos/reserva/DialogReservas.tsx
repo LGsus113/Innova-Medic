@@ -3,6 +3,8 @@ import type {
   DialogConfirmarCitaProps,
   DialogConfirmarCitaRef,
 } from "@src/types/type";
+import InputField from "@src/components/utils/Input-Field";
+import TextIcon from "@src/assets/svg/text-icon.svg?react";
 
 const DialogReservas = forwardRef<
   DialogConfirmarCitaRef,
@@ -28,17 +30,16 @@ const DialogReservas = forwardRef<
         <br />
         Hora: <strong className="text-xl">{slot?.horaInicio}</strong>
       </p>
-
-      <label className="block mt-4 mb-1 text-sm text-neutral-300">
-        Tratamiento:
-      </label>
-      <input
+      <InputField
         type="text"
-        className="w-full p-2 rounded bg-neutral-700 text-white border border-neutral-600 focus:outline-none focus:ring focus:ring-green-500"
-        value={tratamiento}
-        onChange={(e) => setTratamiento(e.target.value)}
+        id="tratamiento"
         placeholder="Ej: Evaluación general, examen de sangre..."
-      />
+        value={tratamiento}
+        onInput={(e) => setTratamiento((e.target as HTMLInputElement).value)}
+        className="mt-4"
+      >
+        <TextIcon className="text-white size-7" />
+      </InputField>
       {error && (
         <div className="mt-2 bg-red-500/10 border border-red-400 text-red-300 text-sm p-2 rounded">
           {error}

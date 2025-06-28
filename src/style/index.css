@@ -33,6 +33,9 @@
   .button-citas {
     @apply text-white brightness-95 font-signika px-4 py-2 rounded-lg hover:cursor-pointer hover:brightness-105 transition border-none outline-none drop-shadow-[0_0_5px_rgba(0,0,0,0.5)];
   }
+  .bg-util {
+    @apply bg-dark bg-[linear-gradient(to_right,#f0f0f011_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f011_1px,transparent_1px)] bg-[size:20px_20px] rounded-xl shadow-[inset_0_0_5px_3px_rgba(0,0,0,0.70)]
+  }
 }
 
 @layer utilities {
