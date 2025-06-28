@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type {
   UsuarioValidado,
   PerfilUsuario,
@@ -100,9 +101,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetchData(
         ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
       );
-      updateSession({ perfil: response.user });
+      const { data, error, message } =
+        parseApiResponse<PerfilUsuario>(response);
 
-      return response.user;
+      if (error || !data) {
+        throw new Error(error || message || "Perfil no disponible");
+      }
+
+      updateSession({ perfil: data });
+      return data;
     } catch (error) {
       setError("Error al cargar el perfil");
       throw error;

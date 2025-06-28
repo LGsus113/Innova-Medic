@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ENDPOINTS } from "@src/api/endpoints";
 import { useApi } from "@src/api/api-T/api-hook";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 
 export function useActualizarEstadoCita() {
   const { fetchData } = useApi();
@@ -22,16 +23,22 @@ export function useActualizarEstadoCita() {
         }
       );
 
-      if (response?.status === "error") {
-        throw new Error(
-          response.message || "Error desconocido en el servidor."
-        );
+      const { data, message, error } = parseApiResponse<{ estado: string }>(
+        response
+      );
+
+      if (error || !data?.estado) {
+        const msg = error || message || "No se pudo actualizar el estado.";
+        setError(msg);
+        setEstadoActualizado(null);
+        return false;
       }
 
-      setEstadoActualizado(response.estado ?? null);
+      setEstadoActualizado(data.estado);
       return true;
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error al actualizar estado.");
+      setEstadoActualizado(null);
       return false;
     } finally {
       setIsLoading(false);

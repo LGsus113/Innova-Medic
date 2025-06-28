@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { CitaRecetaVaciaDTOProps } from "src/types/type";
 
 export function useRegistrarCita() {
@@ -19,15 +20,23 @@ export function useRegistrarCita() {
         body: cita,
       });
 
-      if (result?.status === "success" && result.idCita) {
-        const citaData = { idCita: result.idCita };
-        setData(citaData);
-        return citaData;
-      } else {
-        const msg = result?.message || "No se pudo registrar la cita.";
+      const {
+        data: resultData,
+        message,
+        error,
+      } = parseApiResponse<{ idCita: number }>(result);
+
+      const idCita = resultData?.idCita ?? result?.idCita;
+
+      if (error || !idCita) {
+        const msg = error || message || "No se pudo registrar la cita.";
         setError(msg);
         throw new Error(msg);
       }
+
+      const finalData = { idCita };
+      setData(finalData);
+      return finalData;
     } catch (err: any) {
       setError(err.message);
       throw err;

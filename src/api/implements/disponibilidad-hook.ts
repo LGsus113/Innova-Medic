@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { SlotPorDia } from "@src/types/type";
 
 export function useDisponibilidad(
@@ -21,18 +22,27 @@ export function useDisponibilidad(
       const result = await fetchData(
         ENDPOINTS.PACIENTE.DISPONIBILIDAD(idMedico, fechaInicio, fechaFin)
       );
-      
+
       if (Array.isArray(result)) {
         setData(result);
-      } else if (typeof result === "object" && result.message) {
-        setError(result.message);
+        return;
+      }
+
+      const {
+        data: slots,
+        message,
+        error,
+      } = parseApiResponse<SlotPorDia[]>(result);
+
+      if (error) {
+        setError(error);
         setData([]);
       } else {
-        setError("Error inesperado del servidor.");
-        setData([]);
+        setData(slots ?? []);
+        if (message) setError(message);
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error de conexión");
       setData([]);
     } finally {
       setLoading(false);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { MedicoPoEspecialidadProps } from "@src/types/type";
 
 export function useMedicoPorEspecialidad(esp: string) {
@@ -8,27 +9,29 @@ export function useMedicoPorEspecialidad(esp: string) {
   const [data, setData] = useState<MedicoPoEspecialidadProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mensaje, setMensaje] = useState<string | null>(null);
 
   const fetchMedicos = async () => {
     if (!esp) return;
 
     setLoading(true);
     setError(null);
+    setMensaje(null);
 
     try {
       const result = await fetchData(ENDPOINTS.PACIENTE.MEDICOS(esp));
+      const { data, message, error } =
+        parseApiResponse<MedicoPoEspecialidadProps[]>(result);
 
-      if (Array.isArray(result)) {
-        setData(result);
-      } else if (typeof result === "object" && result.message) {
-        setError(result.message);
+      if (error) {
+        setError(error);
         setData([]);
       } else {
-        setError("Error inesperado del servidor.");
-        setData([]);
+        setData(data ?? []);
+        if (message) setMensaje(message);
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error de red.");
       setData([]);
     } finally {
       setLoading(false);
@@ -40,5 +43,5 @@ export function useMedicoPorEspecialidad(esp: string) {
     fetchMedicos();
   }, [esp]);
 
-  return { data, loading, error, refetch: fetchMedicos };
+  return { data, loading, error, mensaje, refetch: fetchMedicos };
 }

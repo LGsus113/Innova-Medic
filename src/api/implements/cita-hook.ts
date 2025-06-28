@@ -1,25 +1,42 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiClient } from "@src/api/client";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { Cita } from "@src/types/type";
 
 export function useCitasList(endpoint: string | null) {
   const [data, setData] = useState<Cita[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mensaje, setMensaje] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!endpoint) return;
 
     setLoading(true);
     setError(null);
+    setMensaje(null);
 
     try {
-      const json = await apiClient(endpoint);
-      setData(Array.isArray(json) ? json : []);
+      const response = await apiClient(endpoint);
+      const { data: citas, message, error } = parseApiResponse<Cita[]>(response);
+
+      if (error) {
+        setError(error);
+        setData([]);
+        return;
+      }
+
+      if (Array.isArray(citas)) {
+        setData(citas);
+      } else {
+        setData([]);
+        if (message) setMensaje(message);
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Ocurrió un error inesperado."
       );
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -29,5 +46,5 @@ export function useCitasList(endpoint: string | null) {
     fetchData();
   }, [fetchData]);
 
-  return { data, loading, error, refetch: fetchData };
+  return { data, loading, error, mensaje, refetch: fetchData };
 }

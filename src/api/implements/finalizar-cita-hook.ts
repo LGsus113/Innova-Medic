@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ENDPOINTS } from "@src/api/endpoints";
 import { useApi } from "@src/api/api-T/api-hook";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { FinalizarCitaBody } from "@src/types/type";
 
 export function useFinalizarCita() {
@@ -18,10 +19,11 @@ export function useFinalizarCita() {
         body,
       });
 
-      if (response?.status === "error") {
-        throw new Error(
-          response.message || "Error desconocido al finalizar cita"
-        );
+      const { error } = parseApiResponse(response);
+
+      if (error) {
+        setError(error);
+        return false;
       }
 
       return true;

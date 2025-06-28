@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { apiClient } from "@src/api/client";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
 import type { Paciente } from "@src/types/type";
 
 export function useRegisterPaciente() {
@@ -15,12 +16,16 @@ export function useRegisterPaciente() {
         body: paciente,
       });
 
-      const message = response.data?.message || "Registro completado.";
+      const { message, error } = parseApiResponse(response);
 
-      return { success: true, message };
+      if (error) {
+        return { success: false, errorMsg: error };
+      }
+
+      return { success: true, message: message || "Registro completado." };
     } catch (err: any) {
       const errorMsg =
-        err.response?.data?.errorMsg ||
+        err.response?.data?.message ||
         err.message ||
         "Error desconocido al registrar.";
       return { success: false, errorMsg };
