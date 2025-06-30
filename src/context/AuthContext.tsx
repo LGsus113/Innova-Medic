@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useApi } from "@src/api/api-T/api-hook";
 import { ENDPOINTS } from "@src/api/endpoints";
 import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
+
 import type {
   UsuarioValidado,
   PerfilUsuario,

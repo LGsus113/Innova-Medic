@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { useAuthContext } from "@src/context/AuthContext";
-import { useEspecialidades } from "@src/api/implements/especialidades-hook";
-import { useMedicoPorEspecialidad } from "@src/api/implements/medico-especialidad";
-import { useDisponibilidad } from "@src/api/implements/disponibilidad-hook";
+import { useEspecialidades } from "@src/api/api-T/method/especialidades-hook";
+import { useMedicoPorEspecialidad } from "@src/api/api-T/method/medico-especialidad";
+import { useDisponibilidad } from "@src/api/api-T/method/disponibilidad-hook";
 import { obtenerRangoSemanaActual } from "@src/components/utils/functions/disponibilidad-horaria";
-import { useRegistrarCita } from "@src/api/implements/register-cita-hook";
+import { useRegistrarCita } from "@src/api/api-T/method/register-cita-hook";
 import type { DialogConfirmarCitaRef } from "@src/types/type";
 import ComboEspecialidades from "@src/components/home/elements/main/elements/complementos/reserva/ComboEspecialidades";
 import ComboMedicos from "@src/components/home/elements/main/elements/complementos/reserva/ComboMedicos";
@@ -63,7 +63,8 @@ export default function Reservas({
     fechaFin
   );
 
-  const medicoDisabled = !especialidadSeleccionada || medicos.length === 0;
+  const medicoDisabled =
+    !especialidadSeleccionada || (medicos?.length ?? 0) === 0;
 
   const handleClickSlot = (slot: { fecha: string; horaInicio: string }) => {
     setSlotSeleccionado(slot);
@@ -96,6 +97,7 @@ export default function Reservas({
 
     try {
       const res = await registrar(cita);
+      console.log(res);
       alert(`Cita registrada con éxito. Código: ${res.idCita}`);
       dialogRef.current?.close();
       setMedicoSeleccionado("");
@@ -125,7 +127,7 @@ export default function Reservas({
               )}
               {!loadingEspecialidades && !errorEspecialidades && (
                 <ComboEspecialidades
-                  especialidades={especialidades}
+                  especialidades={especialidades ?? []}
                   value={especialidadSeleccionada}
                   onChange={(value) => {
                     setEspecialidadSeleccionada(value);
@@ -144,7 +146,7 @@ export default function Reservas({
               )}
               {!loadingMedicos && !errorMedicos && (
                 <ComboMedicos
-                  medicos={medicos}
+                  medicos={medicos ?? []}
                   value={medicoSeleccionado}
                   onChange={setMedicoSeleccionado}
                   disabled={medicoDisabled}
@@ -188,7 +190,11 @@ export default function Reservas({
             if (errorSlots) {
               return <p className="text-red-500">{errorSlots}</p>;
             }
-            if (slots.length === 0) {
+            if (
+              !slots ||
+              slots.length === 0 ||
+              slots.every((dia) => dia.slots.length === 0)
+            ) {
               return (
                 <p className="text-neutral-400">
                   No hay disponibilidad para este médico.
@@ -197,7 +203,7 @@ export default function Reservas({
             }
             return (
               <HorarioDisponibilidad
-                slots={slots}
+                slots={slots ?? []}
                 onClickSlot={handleClickSlot}
               />
             );

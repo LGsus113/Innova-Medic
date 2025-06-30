@@ -1,10 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { useAuthContext } from "@src/context/AuthContext";
 import { useSectionContext } from "@src/context/SectionContext";
-import { useDescargarRecetaPDF } from "@src/api/api-T/descargar-receta-pdf";
-import { useActualizarEstadoCita } from "@src/api/implements/estado-cita-hook";
-import type { Cita, CitaModalProps } from "@src/types/type";
-import type { CitaRecetaProps } from "@src/types/type";
+import { useDescargarRecetaPDF } from "@src/api/api-T/method/descargar-receta-pdf";
+import { useActualizarEstadoCita } from "@src/api/api-T/method/estado-cita-hook";
+import type { Cita, CitaModalProps, CitaRecetaProps } from "@src/types/type";
 import DialogContent from "@src/components/home/elements/main/elements/complementos/modal/Dialog-Content";
 
 export default function Cita({
@@ -104,10 +103,15 @@ export default function Cita({
     );
   };
 
+  const noPuedesCancelar = () =>
+    !citaSeleccionada ||
+    ["Finalizada", "Cancelada"].includes(citaSeleccionada.estado) ||
+    loadingEstado;
+
   return (
     <>
       <div className="w-full h-full flex flex-col gap-2 overflow-y-auto scroll-clean">
-        {citas.length === 0 ? (
+        {!citas || citas.length === 0 ? (
           <div className="size-full flex justify-center items-center text-white/60">
             <h1 className="text-xl">
               No hay citas registradas por el momento.
@@ -201,11 +205,13 @@ export default function Cita({
               <button
                 onClick={handleCancelar}
                 className={`bg-red-400 shadow-inner shadow-white/50 button-citas ${
-                  loadingEstado ? "opacity-50 cursor-wait" : ""
+                  loadingEstado
+                    ? "opacity-50 cursor-wait"
+                    : noPuedesCancelar()
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
                 }`}
-                disabled={
-                  loadingEstado || citaSeleccionada.estado === "Finalizada"
-                }
+                disabled={noPuedesCancelar()}
               >
                 {loadingEstado ? "Cancelando..." : "Cancelar Cita"}
               </button>

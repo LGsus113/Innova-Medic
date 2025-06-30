@@ -8,7 +8,7 @@ import { useAuthContext } from "@src/context/AuthContext";
 import { useSectionContext } from "@src/context/SectionContext";
 import { useEffect, useState } from "react";
 import { ENDPOINTS } from "@src/api/endpoints";
-import { useCitasList } from "@src/api/implements/cita-hook";
+import { useApiRequest } from "@src/api/api-T/useApiRequest";
 
 export default function DynamicContent() {
   const [endpoint, setEndpoint] = useState<string | null>(null);
@@ -27,7 +27,13 @@ export default function DynamicContent() {
     }
   }, [userId, role]);
 
-  const { data, loading, error, refetch } = useCitasList(endpoint);
+  const { data, loading, error, refetch } = useApiRequest(
+    endpoint || "",
+    {
+      method: "GET",
+      autoFetch: !!endpoint,
+    }
+  );
 
   return (
     <>

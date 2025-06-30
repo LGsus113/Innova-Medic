@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRegisterPaciente } from "@src/api/implements/register-p-hook";
+import { useRegisterPaciente } from "@src/api/api-T/method/register-p-hook";
 import { useAuthContext } from "@src/context/AuthContext";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSectionContext } from "@src/context/SectionContext";
 import { useAuthContext } from "@src/context/AuthContext";
-import { useFinalizarCita } from "@src/api/implements/finalizar-cita-hook";
+import { useFinalizarCita } from "@src/api/api-T/method/finalizar-cita-hook";
 import InputField from "@src/components/utils/Input-Field";
 import TextAreaField from "@src/components/utils/Text-Area-Field";
 import Button from "@src/components/utils/Button";

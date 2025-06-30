@@ -28,13 +28,16 @@ export async function apiClient(
     }
   }
 
+  const isBlob = responseType === "blob";
   const config: RequestInit = {
     method,
     headers: {
-      ...(responseType !== "blob" && {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      }),
+      ...(isBlob
+        ? { Accept: "application/pdf" }
+        : {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
@@ -42,11 +45,31 @@ export async function apiClient(
   };
 
   const response = await fetch(url, config);
+  const contentType = response.headers.get("Content-Type") || "";
 
   if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(error?.message || "Api error");
+    if (contentType.includes("application/json")) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Api error");
+    } else {
+      const text = await response.text().catch(() => null);
+      throw new Error(text || "Api error desconocido");
+    }
   }
 
-  return responseType === "blob" ? response.blob() : response.json();
+  if (isBlob) {
+    if (!contentType.includes("application/pdf")) {
+      const text = await response.text().catch(() => "Respuesta no PDF");
+      try {
+        const parsed = JSON.parse(text);
+        throw new Error(parsed.message || "Error al procesar PDF");
+      } catch {
+        throw new Error(text || "No se pudo descargar el PDF");
+      }
+    }
+
+    return response.blob();
+  }
+
+  return response.json();
 }
