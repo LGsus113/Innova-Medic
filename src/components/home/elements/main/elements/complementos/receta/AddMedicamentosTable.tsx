@@ -1,24 +1,14 @@
 import InputField from "@src/components/utils/Input-Field";
 import Medicine from "@src/assets/svg/medicine.svg?react";
-
-interface Medicamento {
-  nombre: string;
-  dosis: string;
-  frecuencia: string;
-}
-
-interface Props {
-  medicamentos: Medicamento[];
-  setMedicamentos: React.Dispatch<React.SetStateAction<Medicamento[]>>;
-}
+import type { MedicamentosTableProps, MedicamentoProps } from "@src/types/type";
 
 export default function MedicamentosTable({
   medicamentos,
   setMedicamentos,
-}: Props) {
+}: MedicamentosTableProps) {
   const handleInputChange = (
     index: number,
-    field: keyof Medicamento,
+    field: keyof MedicamentoProps,
     value: string
   ) => {
     const newData = [...medicamentos];
@@ -63,7 +53,9 @@ export default function MedicamentosTable({
           {medicamentos.map((med, index) => (
             <tr
               key={index}
-              className={`${index % 2 === 0 ? "bg-gray-600" : "bg-gray-700"} [&>td]:px-2.5 [&>td]:py-2`}
+              className={`${
+                index % 2 === 0 ? "bg-gray-600" : "bg-gray-700"
+              } [&>td]:px-2.5 [&>td]:py-2`}
             >
               <td>
                 <InputField

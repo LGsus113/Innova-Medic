@@ -100,11 +100,11 @@ export default function SignForm() {
     const result = await registrarPaciente(formData);
 
     if (!result.success) {
-      alert("❌ Error: " + result.errorMsg);
+      alert("Error: " + result.errorMsg);
       return;
     }
 
-    alert("✅ " + result.message);
+    alert(result.message);
 
     try {
       await login(formData.email, formData.contrasenia);

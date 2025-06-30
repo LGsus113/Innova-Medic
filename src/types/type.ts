@@ -28,6 +28,15 @@ type InputType =
   | "reset"
   | "submit"
   | "button";
+export type EstadoCita =
+  | "Pendiente"
+  | "Confirmada"
+  | "Cancelada"
+  | "Finalizada"
+  | string;
+export type EstadoRangoFechas = "normal" | "cargando" | "error" | "no-medico";
+export type MehtodRest = "GET" | "POST" | "PUT" | "DELETE";
+export type Mes = "anterior" | "actual" | "siguiente";
 
 export interface MarcaLogoProps {
   superposition: ZIndexTailwind;
@@ -67,13 +76,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tipo?: 1 | 2;
 }
 
-export interface PerfilBase {
+interface PerfilBase {
   sexo: string;
   telefono: string;
   email: string;
 }
 
-export interface DisponibilidadMedica {
+interface DisponibilidadMedica {
   diaSemana: string;
   horaInicio: string;
   horaFin: string;
@@ -100,12 +109,6 @@ export interface UsuarioValidado {
   apellido: string;
   rol: string;
   perfil?: PerfilUsuario;
-}
-
-export interface ApiOptions {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
-  body?: any;
-  headers?: Record<string, string>;
 }
 
 export interface SessionData {
@@ -153,7 +156,7 @@ export interface Cita {
   tratamiento: string;
   notasMedicas: string;
   diagnostico: string;
-  estado: "Pendiente" | "Confirmada" | "Cancelada" | "Finalizada" | string;
+  estado: EstadoCita;
   recetaDTO?: {
     idReceta: number;
     instruccionesAdicionales: string;
@@ -205,7 +208,7 @@ export interface TooltipCalendarProps {
 
 interface DiaCalendario {
   numero: number;
-  mes: "anterior" | "actual" | "siguiente";
+  mes: Mes;
 }
 
 export interface DiaCalendarioConCitas extends DiaCalendario {
@@ -241,13 +244,6 @@ export interface UserAvatarProps extends PTextProps {
   sexo: string;
 }
 
-export interface apiClientProps {
-  method?: string;
-  body?: any;
-  headers?: Record<string, string>;
-  retry?: boolean;
-}
-
 export interface MedicoPoEspecialidadProps {
   idUsuario: number;
   nombre: string;
@@ -267,7 +263,7 @@ export interface ComboMedicosPorEspecialidadProps {
   disabled?: boolean;
 }
 
-export interface SlotTime {
+interface SlotTime {
   horaInicio: string;
   horaFin: string;
   disponible: boolean;
@@ -292,7 +288,7 @@ export interface RangoFechasProps {
   disabled: boolean;
   puedeRetroceder: boolean;
   puedeAvanzar: boolean;
-  estado: "normal" | "cargando" | "error" | "no-medico";
+  estado: EstadoRangoFechas;
 }
 
 export interface DialogConfirmarCitaProps {
@@ -322,7 +318,7 @@ export interface CitaRecetaProps {
   tratamiento: string;
 }
 
-interface MedicamentoRecetaRequestDTO {
+export interface MedicamentoProps {
   nombre: string;
   dosis: string;
   frecuencia: string;
@@ -332,11 +328,24 @@ interface ActionCitaMedicoDTO {
   notasMedicas: string;
   diagnostico: string;
   instruccionesAdicionales: string;
-  medicamentos: MedicamentoRecetaRequestDTO[];
+  medicamentos: MedicamentoProps[];
 }
 
 export interface FinalizarCitaBody {
   id: number;
   actionCitaMedicoDTO: ActionCitaMedicoDTO;
   nombreMedico: string;
+}
+
+export interface MedicamentosTableProps {
+  medicamentos: MedicamentoProps[];
+  setMedicamentos: React.Dispatch<React.SetStateAction<MedicamentoProps[]>>;
+}
+
+export interface RequestOptionsProps {
+  method?: MehtodRest;
+  body?: any;
+  headers?: Record<string, string>;
+  responseType?: "json" | "blob";
+  retry?: boolean;
 }

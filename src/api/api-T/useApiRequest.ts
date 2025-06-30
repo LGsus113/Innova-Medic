@@ -1,12 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { apiClient } from "@src/api/client";
-
-type RequestOptions = {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
-  body?: any;
-  headers?: Record<string, string>;
-  responseType?: "json" | "blob";
-};
+import type { RequestOptionsProps } from "@src/types/type";
 
 export function useApiRequest<T = any>(
   endpoint: string,
@@ -16,7 +10,7 @@ export function useApiRequest<T = any>(
     headers,
     responseType = "json",
     autoFetch = true,
-  }: RequestOptions & { autoFetch?: boolean } = {}
+  }: RequestOptionsProps & { autoFetch?: boolean } = {}
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(autoFetch);
