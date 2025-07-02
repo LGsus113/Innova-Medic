@@ -257,6 +257,12 @@ export interface ComboEspecialidadesProps {
   onChange: (value: string) => void;
 }
 
+export interface ComboSexoProps {
+  value: string;
+  onChange: (value: string) => void;
+  error?: boolean;
+}
+
 export interface ComboMedicosPorEspecialidadProps {
   medicos: MedicoPoEspecialidadProps[];
   value: string;
@@ -317,6 +323,19 @@ export interface CitaRecetaVaciaDTOProps {
 export interface CitaRecetaProps {
   idCitas: number;
   tratamiento: string;
+}
+
+export interface DetalleCitaProps {
+  cita: Cita;
+  onClose: () => void;
+  onCitaRegistrada?: () => void;
+}
+
+export interface PDFDialogProps {
+  url: string;
+  open: boolean;
+  onClose: () => void;
+  title?: string;
 }
 
 export interface MedicamentoProps {

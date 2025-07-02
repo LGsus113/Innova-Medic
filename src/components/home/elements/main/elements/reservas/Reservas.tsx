@@ -3,14 +3,14 @@ import { useAuthContext } from "@src/context/AuthContext";
 import { useEspecialidades } from "@src/api/api-T/method/especialidades-hook";
 import { useMedicoPorEspecialidad } from "@src/api/api-T/method/medico-especialidad";
 import { useDisponibilidad } from "@src/api/api-T/method/disponibilidad-hook";
-import { obtenerRangoSemanaActual } from "@src/components/utils/functions/disponibilidad-horaria";
+import { obtenerRangoSemanaActual } from "@src/functions/disponibilidad-horaria";
 import { useRegistrarCita } from "@src/api/api-T/method/register-cita-hook";
 import type { DialogConfirmarCitaRef } from "@src/types/type";
-import ComboEspecialidades from "@src/components/home/elements/main/elements/complementos/reserva/ComboEspecialidades";
-import ComboMedicos from "@src/components/home/elements/main/elements/complementos/reserva/ComboMedicos";
-import RangoDeFechas from "@src/components/home/elements/main/elements/complementos/reserva/RangoDeFechas";
-import HorarioDisponibilidad from "@src/components/home/elements/main/elements/complementos/reserva/HorarioDisponibilidad";
-import DialogReservas from "@src/components/home/elements/main/elements/complementos/reserva/DialogReservas";
+import ComboEspecialidades from "@src/components/home/elements/main/elements/reservas/components/ComboEspecialidades";
+import ComboMedicos from "@src/components/home/elements/main/elements/reservas/components/ComboMedicos";
+import RangoDeFechas from "@src/components/home/elements/main/elements/reservas/components/RangoDeFechas";
+import HorarioDisponibilidad from "@src/components/home/elements/main/elements/reservas/components/HorarioDisponibilidad";
+import DialogReservas from "@src/components/home/elements/main/elements/reservas/components/DialogReservas";
 
 export default function Reservas({
   onCitaRegistrada,

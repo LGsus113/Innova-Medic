@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSectionContext } from "@src/context/SectionContext";
-import { $, $$ } from "@src/components/utils/functions/dom-selector";
+import { $, $$ } from "@src/functions/dom-selector";
 
 export default function Hovered() {
   const { activeSection } = useSectionContext();

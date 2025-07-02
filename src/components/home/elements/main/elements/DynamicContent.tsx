@@ -1,7 +1,7 @@
-import Agenda from "@src/components/home/elements/main/elements/complementos/Agenda";
-import Cita from "@src/components/home/elements/main/elements/complementos/Cita";
-import Recetas from "@src/components/home/elements/main/elements/complementos/Receta";
-import Reservas from "@src/components/home/elements/main/elements/complementos/Reservas";
+import Agenda from "@src/components/home/elements/main/elements/agendas/Agenda";
+import Cita from "@src/components/home/elements/main/elements/citas/Cita";
+import Recetas from "@src/components/home/elements/main/elements/recetas/Receta";
+import Reservas from "@src/components/home/elements/main/elements/reservas/Reservas";
 import LoadingComponent from "@src/components/utils/LoadingComponent";
 import ErrorComponent from "@src/components/utils/ErrorComponent";
 import { useAuthContext } from "@src/context/AuthContext";
@@ -35,8 +35,8 @@ export default function DynamicContent() {
   const citas = data?.status === "success" ? data.data : [];
 
   return (
-    <>
-      <h1 className="font-signika text-3xl text-white font-bold">
+    <div className="grow min-h-0 flex flex-col gap-5">
+      <h1 className="shrink-0 font-signika text-3xl text-white font-bold">
         {
           {
             citas: "Citas Pendientes",
@@ -62,6 +62,6 @@ export default function DynamicContent() {
       {activeSection === "recetas" && <Recetas onCitaRegistrada={refetch} />}
 
       {activeSection === "reservar" && <Reservas onCitaRegistrada={refetch} />}
-    </>
+    </div>
   );
 }

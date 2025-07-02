@@ -4,6 +4,7 @@ import { useRegisterPaciente } from "@src/api/api-T/method/register-p-hook";
 import { useAuthContext } from "@src/context/AuthContext";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";
+import ComboSexualidad from "@src/components/login/elements/ComboSexualidad";
 import Name from "@src/assets/svg/name.svg?react";
 import LastName from "@src/assets/svg/lastname.svg?react";
 import Phone from "@src/assets/svg/phone.svg?react";
@@ -110,7 +111,6 @@ export default function SignForm() {
       await login(formData.email, formData.contrasenia);
       navigate("/home");
     } catch (e) {
-      console.error("Error al iniciar sesión automáticamente:", e);
       alert("Registro completado, pero el inicio de sesión falló.");
     }
 
@@ -215,16 +215,16 @@ export default function SignForm() {
     } else {
       return (
         <>
-          <InputField
-            type="text"
-            placeholder="Tu sexualidad"
-            id="sexo"
-            value={formData.sexo}
-            onInput={handleInput}
-            className={errors.sexo ? "border border-red-500" : ""}
-          >
-            <Phone className="text-white size-7" />
-          </InputField>
+          <div className={errors.sexo ? "border border-red-500" : ""}>
+            <ComboSexualidad
+              value={formData.sexo}
+              onChange={(val) => {
+                setFormData((prev) => ({ ...prev, sexo: val }));
+                setErrors((prev) => ({ ...prev, sexo: false }));
+              }}
+              error={errors.sexo}
+            />
+          </div>
           <InputField
             type="email"
             placeholder="Tu correo"

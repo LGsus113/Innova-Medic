@@ -1,4 +1,4 @@
-import ParrafoInfo from "@src/components/home/elements/main/elements/complementos/modal/Parrafo-Info";
+import ParrafoInfo from "@src/components/home/elements/main/elements/citas/components/Parrafo-Info";
 import type { Cita } from "@src/types/type";
 
 function getEstadoColor(estado: string) {
@@ -16,12 +16,12 @@ function getEstadoColor(estado: string) {
   }
 }
 
-export default function DialogContent({
+export default function CitaContent({
   citaSeleccionada,
 }: {
   citaSeleccionada: Cita;
 }) {
-  const stylep = "w-full flex [&>p]:basis-full [&>p]:flex-wrap";
+  const stylep = "w-full h-auto flex [&>p]:basis-full [&>p]:flex-wrap";
 
   const {
     tratamiento,

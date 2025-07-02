@@ -12,23 +12,15 @@ export function useDescargarRecetaPDF() {
     autoFetch: false,
   });
 
-  const descargarPDF = async (idCita: number) => {
+  const obtenerURLBlob = async (idCita: number): Promise<string | null> => {
     try {
       const blob = await descargar({}, ENDPOINTS.USUARIO.RECETA_PDF(idCita));
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = `receta-${idCita}.pdf`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      return window.URL.createObjectURL(blob);
     } catch (err) {
-      console.error("Error al descargar receta:", err);
+      alert("Error al obtener receta PDF: " + err);
+      return null;
     }
   };
 
-  return { descargarPDF, loading, error };
+  return { obtenerURLBlob, loading, error };
 }

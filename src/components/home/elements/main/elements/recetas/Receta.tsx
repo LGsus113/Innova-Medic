@@ -5,7 +5,7 @@ import { useFinalizarCita } from "@src/api/api-T/method/finalizar-cita-hook";
 import InputField from "@src/components/utils/Input-Field";
 import TextAreaField from "@src/components/utils/Text-Area-Field";
 import Button from "@src/components/utils/Button";
-import AddMedicamentosTable from "@src/components/home/elements/main/elements/complementos/receta/AddMedicamentosTable";
+import AddMedicamentosTable from "@src/components/home/elements/main/elements/recetas/components/AddMedicamentosTable";
 
 import BodyScan from "@src/assets/svg/body-scan.svg?react";
 import Notes from "@src/assets/svg/notes.svg?react";
