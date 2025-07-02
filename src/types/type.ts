@@ -114,6 +114,7 @@ export interface UsuarioValidado {
 export interface SessionData {
   user: UsuarioValidado | null;
   token: string;
+  refreshToken?: string;
   perfil?: PerfilUsuario | null;
 }
 
@@ -348,4 +349,10 @@ export interface RequestOptionsProps {
   headers?: Record<string, string>;
   responseType?: "json" | "blob";
   retry?: boolean;
+}
+
+export interface LoginResponse {
+  token: string;
+  refreshToken: string;
+  usuario: UsuarioValidado;
 }

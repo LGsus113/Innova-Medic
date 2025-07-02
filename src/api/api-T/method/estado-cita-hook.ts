@@ -1,32 +1,40 @@
 import { ENDPOINTS } from "@src/api/endpoints";
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
+import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
 
 export function useActualizarEstadoCita() {
   const {
     loading: isLoading,
-    error,
+    error: requestError,
     refetch: ejecutarCambioEstado,
+    data,
   } = useApiRequest<{ estado: string }>("", {
     method: "PUT",
     autoFetch: false,
   });
 
   const actualizarEstado = async (idCita: number, nuevoEstado: string) => {
-    try {
-      const response = await ejecutarCambioEstado({
-        responseType: "json",
-      }, ENDPOINTS.USUARIO.ESTADO_CITA(idCita, nuevoEstado));
+    const response = await ejecutarCambioEstado(
+      { responseType: "json" },
+      ENDPOINTS.USUARIO.ESTADO_CITA(idCita, nuevoEstado)
+    );
 
-      const estadoActualizado = response?.estado;
-      if (!estadoActualizado) {
-        throw new Error("No se pudo actualizar el estado.");
-      }
+    const { data: parsedData, error: parseError } = parseApiResponse<{
+      estado: string;
+    }>(response);
 
-      return true;
-    } catch (err) {
-      return false;
+    if (!parsedData?.estado) {
+      throw new Error(parseError || "No se pudo actualizar el estado.");
     }
+
+    return true;
   };
 
-  return { actualizarEstado, isLoading, error };
+  const { error: apiError } = parseApiResponse<{ estado: string }>(data);
+
+  return {
+    actualizarEstado,
+    isLoading,
+    error: apiError || requestError,
+  };
 }

@@ -103,6 +103,11 @@ export default function Cita({
     );
   };
 
+  const activarBotonPDF = () => {
+    if (!citaSeleccionada) return false;
+    return citaSeleccionada.estado === "Finalizada";
+  };
+
   const noPuedesCancelar = () =>
     !citaSeleccionada ||
     ["Finalizada", "Cancelada"].includes(citaSeleccionada.estado) ||
@@ -144,7 +149,6 @@ export default function Cita({
           })
         )}
       </div>
-
       <dialog
         ref={dialogRef}
         className="w-1/2 h-[calc(60vh+6px)] border-none outline-none rounded-xl p-8 backdrop:bg-black/0 fixed mx-auto z-40 bg-util dialog-info-medic"
@@ -191,14 +195,18 @@ export default function Cita({
               )}
               <button
                 className={`bg-emerald-500 shadow-inner shadow-white/50 button-citas ${
-                  loading ? "opacity-50 cursor-wait" : ""
+                  loading
+                    ? "opacity-50 cursor-wait"
+                    : !activarBotonPDF()
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
                 }`}
                 onClick={() => {
                   if (citaSeleccionada.idCitas) {
                     descargarPDF(citaSeleccionada.idCitas);
                   }
                 }}
-                disabled={loading}
+                disabled={!activarBotonPDF() || loading}
               >
                 {loading ? "Descargando..." : "Descargar Receta"}
               </button>

@@ -34,7 +34,6 @@ export function useApiRequest<T = any>(
 
       const finalResponseType =
         override?.responseType ?? defaultResponseType.current;
-      const isBlob = finalResponseType === "blob";
 
       try {
         const response = await apiClient(customEndpoint ?? endpoint, {
@@ -44,19 +43,13 @@ export function useApiRequest<T = any>(
           responseType: finalResponseType,
         });
 
-        if (!isBlob && response.status === "error") {
-          throw new Error(response.message || "Error de la API");
-        }
-
-        const result = isBlob ? response : response.data;
-        setData(result);
-        return result;
+        setData(response);
+        return response;
       } catch (err: any) {
         if (
-          isBlob &&
+          finalResponseType === "blob" &&
           err instanceof Error &&
-          err.message &&
-          err.message.startsWith("{")
+          err.message?.startsWith("{")
         ) {
           try {
             const parsed = JSON.parse(err.message);

@@ -1,38 +1,41 @@
-import { useState } from "react";
-import { apiClient } from "@src/api/client";
 import { ENDPOINTS } from "@src/api/endpoints";
-import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
+import { useApiRequest } from "@src/api/api-T/useApiRequest";
+import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
 import type { Paciente } from "@src/types/type";
 
 export function useRegisterPaciente() {
-  const [loading, setLoading] = useState(false);
+  const { loading, refetch: ejecutarRegistro } = useApiRequest<{
+    message: string;
+  }>(ENDPOINTS.REGISTRO.PACIENTE(), {
+    method: "POST",
+    autoFetch: false,
+  });
 
-  async function registrarPaciente(paciente: Paciente) {
+  const registrarPaciente = async (paciente: Paciente) => {
     try {
-      setLoading(true);
+      const response = await ejecutarRegistro({ body: paciente });
 
-      const response = await apiClient(ENDPOINTS.REGISTRO.PACIENTE(), {
-        method: "POST",
-        body: paciente,
-      });
+      const { data: parsed, error: parseError } = parseApiResponse<{
+        message?: string;
+      }>(response);
 
-      const { message, error } = parseApiResponse(response);
-
-      if (error) {
-        return { success: false, errorMsg: error };
+      if (parseError) {
+        return {
+          success: false,
+          errorMsg: parseError,
+        };
       }
 
-      return { success: true, message: message || "Registro completado." };
+      const mensaje = parsed?.message ?? response.message ?? "Registro exitoso";
+
+      return { success: true, message: mensaje };
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        err.message ||
-        "Error desconocido al registrar.";
-      return { success: false, errorMsg };
-    } finally {
-      setLoading(false);
+      return {
+        success: false,
+        errorMsg: err.message || "Error desconocido al registrar.",
+      };
     }
-  }
+  };
 
   return { registrarPaciente, loading };
 }

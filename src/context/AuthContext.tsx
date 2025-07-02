@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "@src/api/api-T/api-hook";
-import { ENDPOINTS } from "@src/api/endpoints";
-import { parseApiResponse } from "@src/components/utils/functions/parseApiResponse";
-
+import { useLoginUsuario } from "@src/api/api-T/method/login-usuario";
+import { usePerfilUsuario } from "@src/api/api-T/method/perfil-usuario";
 import type {
   UsuarioValidado,
   PerfilUsuario,
@@ -25,7 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { fetchData } = useApi();
+
+  const { loginUsuario } = useLoginUsuario();
+  const { fetchPerfil: fetchPerfilApi } = usePerfilUsuario(user?.idUsuario);
 
   const updateSession = (updates: Partial<SessionData>) => {
     const currentSession = JSON.parse(
@@ -40,12 +40,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initializeAuth = () => {
       const stored = localStorage.getItem("session");
       if (stored) {
         try {
           const session: SessionData = JSON.parse(stored);
-
           if (!session.token || !session.user) {
             throw new Error("Sesión inválida");
           }
@@ -72,19 +71,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string,
     password: string
   ): Promise<{ token: string; usuario: UsuarioValidado }> => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await fetchData(ENDPOINTS.USUARIO.VALIDATION(), {
-        method: "POST",
-        body: { email, contrasenia: password },
-      });
+      const result = await loginUsuario(email, password);
 
-      const { token, usuario } = response;
-      updateSession({ user: usuario, token });
+      if (!result.success) {
+        setError(result.errorMsg || "Error al iniciar sesión");
+        throw new Error(result.errorMsg || "Credenciales inválidas");
+      }
+
+      const { token, refreshToken, usuario } = result;
+      updateSession({ user: usuario, token, refreshToken });
 
       return { token, usuario };
     } catch (error) {
-      setError("Error al iniciar sesión");
       throw error;
     } finally {
       setLoading(false);
@@ -99,18 +99,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return perfil;
       }
 
-      const response = await fetchData(
-        ENDPOINTS.USUARIO.PERFIL(user.idUsuario)
-      );
-      const { data, error, message } =
-        parseApiResponse<PerfilUsuario>(response);
-
-      if (error || !data) {
-        throw new Error(error || message || "Perfil no disponible");
-      }
-
-      updateSession({ perfil: data });
-      return data;
+      const perfilData = await fetchPerfilApi();
+      updateSession({ perfil: perfilData });
+      return perfilData;
     } catch (error) {
       setError("Error al cargar el perfil");
       throw error;

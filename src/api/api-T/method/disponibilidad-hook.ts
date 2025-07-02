@@ -1,5 +1,6 @@
 import { ENDPOINTS } from "@src/api/endpoints";
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
+import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
 import type { SlotPorDia } from "@src/types/type";
 
 export function useDisponibilidad(
@@ -13,8 +14,22 @@ export function useDisponibilidad(
     ? ENDPOINTS.PACIENTE.DISPONIBILIDAD(idMedico, fechaInicio, fechaFin)
     : "";
 
-  return useApiRequest<SlotPorDia[]>(endpoint, {
+  const {
+    data,
+    error: requestError,
+    ...rest
+  } = useApiRequest(endpoint, {
     method: "GET",
     autoFetch: isValid,
   });
+
+  const { data: disponibilidades, error: parsedError } =
+    parseApiResponse<SlotPorDia[]>(data);
+  const finalError = parsedError ?? requestError;
+
+  return {
+    data: disponibilidades,
+    error: finalError,
+    ...rest,
+  };
 }

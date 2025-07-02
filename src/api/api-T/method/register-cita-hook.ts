@@ -1,12 +1,13 @@
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
 import { ENDPOINTS } from "@src/api/endpoints";
+import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
 import type { CitaRecetaVaciaDTOProps } from "src/types/type";
 
 export function useRegistrarCita() {
   const {
     data,
     loading,
-    error,
+    error: requestError,
     refetch: ejecutarRegistro,
   } = useApiRequest<{ idCita: number }>(ENDPOINTS.REGISTRO.CITA(), {
     method: "POST",
@@ -16,14 +17,25 @@ export function useRegistrarCita() {
   const registrar = async (cita: CitaRecetaVaciaDTOProps) => {
     const response = await ejecutarRegistro({ body: cita });
 
-    const idCita = response?.idCita;
+    const { data: parsedData, error: parsedError } = parseApiResponse<{
+      idCita: number;
+    }>(response);
 
-    if (!idCita) {
-      throw new Error("No se pudo registrar la cita.");
+    if (!parsedData?.idCita) {
+      throw new Error(parsedError || "No se pudo registrar la cita");
     }
 
-    return { idCita };
+    return { idCita: parsedData.idCita };
   };
 
-  return { registrar, loading, error, data };
+  const { data: parsedData, error: apiError } = parseApiResponse<{
+    idCita: number;
+  }>(data);
+
+  return {
+    registrar,
+    loading,
+    error: apiError || requestError,
+    data: parsedData,
+  };
 }

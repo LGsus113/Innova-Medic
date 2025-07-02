@@ -40,6 +40,16 @@ export default function Receta({
     nombreMedico: fullName ?? "Desconocido",
   };
 
+  const limpiarFormulario = () => {
+    setDiagnostico("");
+    setNotas("");
+    setRecomendacion("");
+    setMedicamentos([{ nombre: "", dosis: "", frecuencia: "" }]);
+    setCitaActual(null);
+    setActiveSection("citas");
+    onCitaRegistrada?.();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -56,14 +66,8 @@ export default function Receta({
     const success = await finalizarCita(cuerpo);
 
     if (success) {
-      alert("Cita finalizada exitosamente.");
-      setDiagnostico("");
-      setNotas("");
-      setRecomendacion("");
-      setMedicamentos([{ nombre: "", dosis: "", frecuencia: "" }]);
-      setCitaActual(null);
-      setActiveSection("citas");
-      onCitaRegistrada?.();
+      alert("Cita finalizada exitosamente");
+      limpiarFormulario();
     } else if (error) {
       alert("Error: " + error);
     }

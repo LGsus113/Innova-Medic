@@ -27,13 +27,12 @@ export default function DynamicContent() {
     }
   }, [userId, role]);
 
-  const { data, loading, error, refetch } = useApiRequest(
-    endpoint || "",
-    {
-      method: "GET",
-      autoFetch: !!endpoint,
-    }
-  );
+  const { data, loading, error, refetch } = useApiRequest(endpoint || "", {
+    method: "GET",
+    autoFetch: !!endpoint,
+  });
+
+  const citas = data?.status === "success" ? data.data : [];
 
   return (
     <>
@@ -53,12 +52,12 @@ export default function DynamicContent() {
           {loading && <LoadingComponent />}
           {error && <ErrorComponent error={error} onRetry={refetch} />}
           {!loading && !error && (
-            <Cita citas={data} onCitaRegistrada={refetch} />
+            <Cita citas={citas} onCitaRegistrada={refetch} />
           )}
         </>
       )}
 
-      {activeSection === "agenda" && <Agenda citas={data} />}
+      {activeSection === "agenda" && <Agenda citas={citas} />}
 
       {activeSection === "recetas" && <Recetas onCitaRegistrada={refetch} />}
 
