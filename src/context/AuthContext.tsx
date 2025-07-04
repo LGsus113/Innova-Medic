@@ -76,7 +76,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await loginUsuario(email, password);
 
       if (!result.success) {
-        setError(result.errorMsg || "Error al iniciar sesión");
         throw new Error(result.errorMsg || "Credenciales inválidas");
       }
 

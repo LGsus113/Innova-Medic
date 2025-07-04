@@ -47,6 +47,10 @@ export async function apiClient(
   const contentType = response.headers.get("Content-Type") || "";
 
   if (response.status === 401 && retry) {
+    if (window.location.pathname === "/") {
+      throwApiError("Credenciales inválidas");
+    }
+
     const nuevoToken = await refreshAccessToken(BASE_URL);
     if (nuevoToken) {
       return apiClient(endpoint, {

@@ -50,8 +50,6 @@ export default function LoginForm() {
       toast.error("Error de autenticación", {
         description: errorMessage,
       });
-      setEmail("");
-      setPassword("");
     }
   };
 

@@ -17,8 +17,14 @@ createRoot(rootElement).render(
     <Router>
       <AuthProvider>
         <AppRoutes />
-        <Toaster richColors position="top-right" closeButton duration={4000} expand />
       </AuthProvider>
+      <Toaster
+        richColors
+        position="top-right"
+        closeButton
+        duration={4000}
+        expand
+      />
     </Router>
   </StrictMode>
 );
