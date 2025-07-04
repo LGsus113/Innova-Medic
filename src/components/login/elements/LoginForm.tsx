@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@src/context/AuthContext";
+import { toast } from "sonner";
+import type { FormEvent } from "react";
 import InputField from "@src/components/utils/Input-Field";
 import Button from "@src/components/utils/Button";
 import Arroba from "@src/assets/svg/@.svg";
@@ -22,7 +23,10 @@ export default function LoginForm() {
     if (!email.trim() || !password.trim()) {
       setEmailError(!email.trim());
       setPasswordError(!password.trim());
-      alert("Los campos son obligatorios");
+
+      toast.warning("Campos obligatorios", {
+        description: "Debes ingresar tu correo y contraseña.",
+      });
       return;
     }
 
@@ -31,16 +35,21 @@ export default function LoginForm() {
 
     try {
       const { usuario } = await login(email, password);
-
-      alert(`Bienvenido(a) al sistema, ${usuario.nombre} ${usuario.apellido}`);
-
+      toast.success(
+        `¡Bienvenido(a) al sistema, ${usuario.nombre} ${usuario.apellido}!`,
+        {
+          description: "Has iniciado sesion correctamente.",
+        }
+      );
       setEmail("");
       setPassword("");
       navigate("/home");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Ocurrió un error inesperado.";
-      alert(`Error: ${errorMessage}`);
+      toast.error("Error de autenticación", {
+        description: errorMessage,
+      });
       setEmail("");
       setPassword("");
     }

@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "@src/context/AuthContext";
+import { Toaster } from "sonner";
 import AppRoutes from "@src/router/AppRoutes";
 import "@src/style/index.css";
 
@@ -16,6 +17,7 @@ createRoot(rootElement).render(
     <Router>
       <AuthProvider>
         <AppRoutes />
+        <Toaster richColors position="top-right" closeButton duration={4000} expand />
       </AuthProvider>
     </Router>
   </StrictMode>
