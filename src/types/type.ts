@@ -376,3 +376,11 @@ export interface LoginResponse {
   refreshToken: string;
   usuario: UsuarioValidado;
 }
+
+export interface ApiClientOptions {
+  method?: string;
+  body?: any;
+  headers?: Record<string, string>;
+  responseType?: "json" | "blob";
+  retry?: boolean;
+}

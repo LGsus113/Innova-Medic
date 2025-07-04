@@ -1,5 +1,5 @@
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
-import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
+import { parseApiResponse } from "@src/functions/parseApiResponse";
 import type { Cita } from "@src/types/type";
 
 export function useCitaLista(endpoint: string) {

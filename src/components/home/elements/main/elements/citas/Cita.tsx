@@ -26,7 +26,7 @@ export default function Cita({ citas, onCitaRegistrada }: CitaModalProps) {
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${listaCitasCondicional()}`}
       >
-        <div className="flex flex-col gap-2 h-full overflow-y-auto scroll-clean p-1">
+        <div className="flex flex-col gap-2 h-full overflow-y-auto scroll-clean">
           {!citas || citas.length === 0 ? (
             <div className="size-full flex justify-center items-center text-white/60">
               <h1 className="text-xl">

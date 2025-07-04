@@ -1,36 +1,8 @@
+import { throwApiError } from "@src/functions/errorAPI";
+import { refreshAccessToken } from "@src/api/api-T/refresh";
+import type { ApiClientOptions } from "@src/types/type";
+
 const BASE_URL = "http://localhost:8080";
-
-async function refreshAccessToken(): Promise<string | null> {
-  const session = localStorage.getItem("session");
-  if (!session) return null;
-
-  try {
-    const parsed = JSON.parse(session);
-    const refreshToken = parsed?.refreshToken;
-    if (!refreshToken) return null;
-
-    const res = await fetch(`${BASE_URL}/api/usuario/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    });
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-
-    const nuevoToken = data?.token;
-    if (!nuevoToken) return null;
-
-    const nuevaSession = { ...parsed, token: nuevoToken };
-    localStorage.setItem("session", JSON.stringify(nuevaSession));
-
-    return nuevoToken;
-  } catch (e) {
-    console.error("Error en refreshAccessToken:", e);
-    return null;
-  }
-}
 
 export async function apiClient(
   endpoint: string,
@@ -40,26 +12,19 @@ export async function apiClient(
     headers = {},
     responseType = "json",
     retry = true,
-  }: {
-    method?: string;
-    body?: any;
-    headers?: Record<string, string>;
-    responseType?: "json" | "blob";
-    retry?: boolean;
-  } = {}
+  }: ApiClientOptions = {}
 ): Promise<any> {
   const url = `${BASE_URL}${endpoint}`;
-
   const session = localStorage.getItem("session");
+
+  let parsedSession: any = null;
   let token: string | null = null;
 
-  if (session) {
-    try {
-      const parsed = JSON.parse(session);
-      token = parsed?.token;
-    } catch (e) {
-      console.error("Error parsing session", e);
-    }
+  try {
+    parsedSession = session ? JSON.parse(session) : null;
+    token = parsedSession?.token || null;
+  } catch (e) {
+    console.error("Error al parsear la sesión:", e);
   }
 
   const isBlob = responseType === "blob";
@@ -82,7 +47,7 @@ export async function apiClient(
   const contentType = response.headers.get("Content-Type") || "";
 
   if (response.status === 401 && retry) {
-    const nuevoToken = await refreshAccessToken();
+    const nuevoToken = await refreshAccessToken(BASE_URL);
     if (nuevoToken) {
       return apiClient(endpoint, {
         method,
@@ -91,21 +56,25 @@ export async function apiClient(
         responseType,
         retry: false,
       });
-    } else {
-      localStorage.removeItem("session");
-      window.location.href = "/";
-      throw new Error("Sesión expirada. Inicia sesión nuevamente.");
     }
+
+    localStorage.removeItem("session");
+    window.location.href = "/";
+    throwApiError("Sesión expirada. Inicia sesión nuevamente.");
   }
 
   if (!response.ok) {
     if (contentType.includes("application/json")) {
-      const error = await response.json().catch(() => null);
-      throw new Error(error?.message || "Api error");
-    } else {
-      const text = await response.text().catch(() => null);
-      throw new Error(text || "Api error desconocido");
+      try {
+        const error = await response.json();
+        throwApiError(error?.message || "Error en la API");
+      } catch {
+        throwApiError("Error inesperado al procesar respuesta JSON");
+      }
     }
+
+    const text = await response.text().catch(() => null);
+    throwApiError(text || "Error desconocido en la API");
   }
 
   if (isBlob) {
@@ -113,9 +82,9 @@ export async function apiClient(
       const text = await response.text().catch(() => "Respuesta no PDF");
       try {
         const parsed = JSON.parse(text);
-        throw new Error(parsed.message || "Error al procesar PDF");
+        throwApiError(parsed.message || "Error al procesar PDF");
       } catch {
-        throw new Error(text || "No se pudo descargar el PDF");
+        throwApiError(text || "No se pudo descargar el PDF");
       }
     }
 

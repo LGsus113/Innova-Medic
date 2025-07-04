@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "@src/api/endpoints";
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
-import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
+import { parseApiResponse } from "@src/functions/parseApiResponse";
 import type { PerfilUsuario } from "@src/types/type";
 
 export function usePerfilUsuario(userId: number | undefined) {

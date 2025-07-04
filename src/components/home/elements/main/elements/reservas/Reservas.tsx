@@ -97,7 +97,6 @@ export default function Reservas({
 
     try {
       const res = await registrar(cita);
-      console.log(res);
       alert(`Cita registrada con éxito. Código: ${res.idCita}`);
       dialogRef.current?.close();
       setMedicoSeleccionado("");

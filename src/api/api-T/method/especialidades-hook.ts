@@ -1,6 +1,6 @@
 import { useApiRequest } from "@src/api/api-T/useApiRequest";
 import { ENDPOINTS } from "@src/api/endpoints";
-import { parseApiResponse } from "@src/api/api-T/parseApiResponse";
+import { parseApiResponse } from "@src/functions/parseApiResponse";
 
 export function useEspecialidades() {
   const {
