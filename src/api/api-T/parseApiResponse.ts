@@ -4,11 +4,12 @@ export function parseApiResponse<T>(response: any): {
 } {
   if (!response) return { data: null, error: null };
 
-  if (response.status === "success") {
-    const data =
-      response.data ??
-      (response.message ? { message: response.message } : null);
-    return { data: data as T, error: null };
+  if (response.status === "success" && "data" in response) {
+    return { data: response.data as T, error: null };
+  }
+
+  if (response.status === "success" && "message" in response) {
+    return { data: null, error: response.message || null };
   }
 
   if (response.status === "error") {

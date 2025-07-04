@@ -81,7 +81,7 @@ export async function apiClient(
   const response = await fetch(url, config);
   const contentType = response.headers.get("Content-Type") || "";
 
-  if (response.status === 403 && retry) {
+  if (response.status === 401 && retry) {
     const nuevoToken = await refreshAccessToken();
     if (nuevoToken) {
       return apiClient(endpoint, {

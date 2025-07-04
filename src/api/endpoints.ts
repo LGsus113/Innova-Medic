@@ -7,7 +7,10 @@ export const ENDPOINTS = {
     RECETA_PDF: (id: number) => `/api/cita/${id}/receta-pdf`,
   },
   PACIENTE: {
-    LIST_CITA_PACIENTE: (id: number) => `/api/pacientes/cita/${id}`,
+    LIST_CITA_PACIENTE: (id: number, estado?: string) => {
+      let base = `/api/pacientes/cita/${id}`;
+      return estado ? `${base}?estado=${estado}` : base;
+    },
     ESPECIALIDADES: () => "/api/pacientes/especialidades",
     MEDICOS: (especialidad: string) =>
       `/api/pacientes/lista-medicos?especialidad=${encodeURIComponent(
@@ -17,7 +20,10 @@ export const ENDPOINTS = {
       `/api/cita/disponibilidad?idMedico=${idMedico}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
   },
   MEDICO: {
-    LIST_CITA_MEDICO: (id: number) => `/api/medicos/cita/${id}`,
+    LIST_CITA_MEDICO: (id: number, estado?: string) => {
+      let base = `/api/medicos/cita/${id}`;
+      return estado ? `${base}?estado=${estado}` : base;
+    },
     FINALIZAR_CITA: () => "/api/cita/finalizar/informacion",
   },
   REGISTRO: {

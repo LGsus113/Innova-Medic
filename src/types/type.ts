@@ -174,6 +174,7 @@ export interface Cita {
 
 export interface CitaModalProps {
   citas: Cita[];
+  onCitaRegistrada?: () => void;
 }
 
 export interface ParrafoInfoProps {

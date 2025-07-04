@@ -4,60 +4,92 @@ import Recetas from "@src/components/home/elements/main/elements/recetas/Receta"
 import Reservas from "@src/components/home/elements/main/elements/reservas/Reservas";
 import LoadingComponent from "@src/components/utils/LoadingComponent";
 import ErrorComponent from "@src/components/utils/ErrorComponent";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@src/components/ui/select";
 import { useAuthContext } from "@src/context/AuthContext";
 import { useSectionContext } from "@src/context/SectionContext";
 import { useEffect, useState } from "react";
-import { ENDPOINTS } from "@src/api/endpoints";
-import { useApiRequest } from "@src/api/api-T/useApiRequest";
+import { useCitaLista } from "@src/api/api-T/method/lista-citas";
+import { endpointCita } from "@src/functions/endpoint-cita";
 
 export default function DynamicContent() {
   const [endpoint, setEndpoint] = useState<string | null>(null);
+  const [estadoFiltro, setEstadoFiltro] = useState<string | null>(null);
   const { userId, role } = useAuthContext();
   const { activeSection } = useSectionContext();
 
   useEffect(() => {
-    if (!userId || !role) return;
+    const endpointGenerado = endpointCita(
+      role,
+      activeSection,
+      userId,
+      estadoFiltro
+    );
+    setEndpoint(endpointGenerado);
+  }, [userId, role, activeSection, estadoFiltro]);
 
-    if (role === "Medico") {
-      setEndpoint(ENDPOINTS.MEDICO.LIST_CITA_MEDICO(userId));
-    } else if (role === "Paciente") {
-      setEndpoint(ENDPOINTS.PACIENTE.LIST_CITA_PACIENTE(userId));
-    } else {
-      setEndpoint(null);
-    }
-  }, [userId, role]);
+  const { citas, loading, error, refetch } = useCitaLista(endpoint || "");
 
-  const { data, loading, error, refetch } = useApiRequest(endpoint || "", {
-    method: "GET",
-    autoFetch: !!endpoint,
-  });
-
-  const citas = data?.status === "success" ? data.data : [];
+  const classItem =
+    "relative cursor-default select-none py-1.5 pl-8 pr-2 rounded-sm hover:bg-neutral-300/75 focus:bg-neutral-300/75 font-normal";
 
   return (
-    <div className="grow min-h-0 flex flex-col gap-5">
-      <h1 className="shrink-0 font-signika text-3xl text-white font-bold">
-        {
+    <div className="grow min-h-0 flex flex-col gap-2">
+      <div className="w-full h-auto flex items-center justify-between">
+        <h1 className="shrink-0 font-signika text-3xl text-white font-bold">
           {
-            citas: "Citas Pendientes",
-            agenda: "Agenda",
-            recetas: "Recetas",
-            reservar: "Agendar Nueva Cita",
-          }[activeSection]
-        }
-      </h1>
+            {
+              citas: "Citas Pendientes",
+              agenda: "Agenda",
+              recetas: "Recetas",
+              reservar: "Agendar Nueva Cita",
+            }[activeSection]
+          }
+        </h1>
+        {activeSection === "citas" && (
+          <Select
+            value={estadoFiltro ?? "todas"}
+            onValueChange={(value) =>
+              setEstadoFiltro(value === "todas" ? null : value)
+            }
+          >
+            <SelectTrigger className="w-[260px] bg-dark/50 border-white/70 text-white">
+              <SelectValue placeholder="Estado a filtrar" />
+            </SelectTrigger>
+            <SelectContent className="bg-dark text-white border-white/60">
+              <SelectItem value="Pendiente" className={classItem}>
+                Pendientes
+              </SelectItem>
+              <SelectItem value="Cancelada" className={classItem}>
+                Canceladas
+              </SelectItem>
+              <SelectItem value="Finalizada" className={classItem}>
+                Finalizadas
+              </SelectItem>
+              <SelectItem value="todas" className={classItem}>
+                Todas
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        )}
+      </div>
 
       {activeSection === "citas" && (
         <>
           {loading && <LoadingComponent />}
           {error && <ErrorComponent error={error} onRetry={refetch} />}
           {!loading && !error && (
-            <Cita citas={citas} onCitaRegistrada={refetch} />
+            <Cita citas={citas ?? []} onCitaRegistrada={refetch} />
           )}
         </>
       )}
 
-      {activeSection === "agenda" && <Agenda citas={citas} />}
+      {activeSection === "agenda" && <Agenda citas={citas ?? []} />}
 
       {activeSection === "recetas" && <Recetas onCitaRegistrada={refetch} />}
 

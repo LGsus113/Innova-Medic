@@ -1,11 +1,11 @@
 import TooltipCalendar from "@src/components/home/elements/main/elements/agendas/components/Tooltip-Calendar";
 import BotonMes from "@src/components/home/elements/main/elements/agendas/components/Boton-Mes";
 import SelectorMes from "@src/components/home/elements/main/elements/agendas/components/Selector-Mes";
-import type { CitaModalProps } from "@src/types/type";
+import type { Cita } from "@src/types/type";
 import { obtenerDiaDelMes } from "@src/functions/obtener-dia-mes";
 import { useEffect, useState } from "react";
 
-export default function Agenda({ citas = [] }: CitaModalProps) {
+export default function Agenda({ citas = [] }: { citas: Cita[] }) {
   const hoy = new Date();
   const [año, setAño] = useState(hoy.getFullYear());
   const [mes, setMes] = useState(hoy.getMonth());

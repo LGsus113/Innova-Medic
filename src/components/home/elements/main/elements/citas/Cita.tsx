@@ -2,10 +2,7 @@ import { useState } from "react";
 import type { Cita, CitaModalProps } from "@src/types/type";
 import DetalleCita from "@src/components/home/elements/main/elements/citas/components/DetalleCita";
 
-export default function Cita({
-  citas,
-  onCitaRegistrada,
-}: CitaModalProps & { onCitaRegistrada?: () => void }) {
+export default function Cita({ citas, onCitaRegistrada }: CitaModalProps) {
   const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
 
   const openCita = (cita: Cita) => {
